@@ -12,12 +12,7 @@
 	<source path="src" />
 	<haxelib name="format" if="html5" />
 	<haxelib name="openfl" />
-	
-	<!--this will only work once the textfield updates have been pushed to haxelib
-	<haxelib name="away3d" />-->
-	
-	<!--otherwise pull git@github.com:ImaginationSydney/away3d-core-openfl.git
-	<source path="path/to/away3d-core-openfl" />-->
+	<haxelib name="away3d" />
 	
 	<assets path="embeds/fonts" rename="fonts" />
 	

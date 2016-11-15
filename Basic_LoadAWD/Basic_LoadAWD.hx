@@ -41,6 +41,7 @@ import openfl.display.Sprite;
 import openfl.net.URLRequest;
 import openfl.events.Event;
 import openfl.geom.Vector3D;
+import openfl.Vector;
 
 import away3d.containers.View3D;
 import away3d.lights.DirectionalLight;
@@ -126,7 +127,7 @@ class Basic_LoadAWD extends Sprite
         _view.scene.addChild(this._light);
 
         //create the lightppicker for the material
-        _lightPicker = new StaticLightPicker([this._light]);
+        _lightPicker = new StaticLightPicker(Vector.ofArray([this._light]));
     }
 
     /**

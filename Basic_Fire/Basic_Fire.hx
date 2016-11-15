@@ -43,6 +43,7 @@ import openfl.display.*;
 import openfl.events.*;
 import openfl.geom.*;
 import openfl.utils.*;
+import openfl.Vector;
 
 import away3d.animators.*;
 import away3d.animators.data.*;
@@ -141,9 +142,9 @@ class Basic_Fire extends Sprite
 		cameraController.tiltAngle = 20;
 		
 		addChild(view);
-					
-        //stats
-        this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
+		
+		//stats
+		this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**
@@ -160,7 +161,7 @@ class Basic_Fire extends Sprite
 		directionalLight.ambientColor = 0x808090;
 		view.scene.addChild(directionalLight);
 		
-		lightPicker = new StaticLightPicker([directionalLight]);
+		lightPicker = new StaticLightPicker(Vector.ofArray([directionalLight]));
 	}
 	
 	/**
@@ -206,7 +207,7 @@ class Basic_Fire extends Sprite
 		var particle:Geometry = new PlaneGeometry(10, 10, 1, 1, false);
 		
 		//combine them into a list
-		var geometrySet:Array<Geometry> = new Array<Geometry>();
+		var geometrySet:Vector<Geometry> = new Vector<Geometry>();
 		for (i in 0...500)
 			geometrySet.push(particle);
 		
@@ -219,7 +220,7 @@ class Basic_Fire extends Sprite
 	private function initObjects()
 	{
 		fireObjects = new Array<FireVO>();
-
+		
 		plane = new Mesh(new PlaneGeometry(1000, 1000), planeMaterial);
 		plane.geometry.scaleUV(2, 2);
 		plane.y = -20;
@@ -278,9 +279,9 @@ class Basic_Fire extends Sprite
 	/**
 	 * Returns an array of active lights in the scene
 	 */
-	private function getAllLights():Array<LightBase>
+	private function getAllLights():Vector<LightBase>
 	{
-		var lights:Array<LightBase> = new Array<LightBase>();
+		var lights:Vector<LightBase> = new Vector<LightBase>();
 		
 		lights.push(directionalLight);
 		
