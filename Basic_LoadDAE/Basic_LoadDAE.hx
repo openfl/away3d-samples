@@ -98,8 +98,8 @@ class Basic_LoadDAE extends Sprite
 	var _lastMouseY:Float;
 
 	/**
-     * Constructor
-     */
+	 * Constructor
+	 */
 	public function new()
 	{
 		super();
@@ -107,8 +107,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Global initialise function
-     */
+	 * Global initialise function
+	 */
 	private function init():Void
 	{
 		initEngine();
@@ -119,8 +119,8 @@ class Basic_LoadDAE extends Sprite
    }
 
 	/**
-     * Initialise the engine
-     */
+	 * Initialise the engine
+	 */
 	private function initEngine():Void
 	{
 		_counter = 0;
@@ -148,8 +148,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Initialise the lights
-     */
+	 * Initialise the lights
+	 */
 	private function initLights():Void
 	{
 		//create the light for the scene
@@ -167,8 +167,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Initialise the materials
-     */
+	 * Initialise the materials
+	 */
 	private function initMaterials():Void
 	{
 		#if !ios
@@ -191,8 +191,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Initialise the scene objects
-     */
+	 * Initialise the scene objects
+	 */
 	private function initObjects():Void
 	{
 		_carpet = new Mesh(new PlaneGeometry(2500, 2500), _carpetMat);
@@ -225,8 +225,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Initialise the listeners
-     */
+	 * Initialise the listeners
+	 */
 	private function initListeners():Void
 	{
 		// setup render loop
@@ -249,8 +249,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Listener function for asset complete event on loader
-     */
+	 * Listener function for asset complete event on loader
+	 */
 	private function onAssetComplete (event:Asset3DEvent)
 	{
 		var asset:IAsset = event.asset;
@@ -271,8 +271,8 @@ class Basic_LoadDAE extends Sprite
 
 
 	/**
-     * Navigation and render loop
-     */
+	 * Navigation and render loop
+	 */
 	private function onEnterFrame(e:Event):Void
 	{
 		if (_move) {
@@ -295,8 +295,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * Mouse down listener for navigation
-     */
+	 * Mouse down listener for navigation
+	 */
 	private function onMouseDown(event:MouseEvent):Void
 	{
 		_lastPanAngle = _cameraController.panAngle;
@@ -308,8 +308,8 @@ class Basic_LoadDAE extends Sprite
 	}
 	
 	/**
-     * Mouse up listener for navigation
-     */
+	 * Mouse up listener for navigation
+	 */
 	private function onMouseUp(event:MouseEvent):Void
 	{
 		_move = false;
@@ -317,8 +317,8 @@ class Basic_LoadDAE extends Sprite
 	}
 	
 	/**
-     * Mouse stage leave listener for navigation
-     */
+	 * Mouse stage leave listener for navigation
+	 */
 	private function onStageMouseLeave(event:Event):Void
 	{
 		_move = false;
@@ -326,8 +326,8 @@ class Basic_LoadDAE extends Sprite
 	}
 
 	/**
-     * stage listener for resize events
-     */
+	 * stage listener for resize events
+	 */
 	private function onResize(event:Event = null):Void
 	{
 		_view.width = stage.stageWidth;

@@ -73,8 +73,8 @@ class Basic_LoadAWD extends Sprite
 	var _suzanne:Mesh;
 
 	/**
-     * Constructor
-     */
+	 * Constructor
+	 */
 	public function new()
 	{
 		super();
@@ -82,8 +82,8 @@ class Basic_LoadAWD extends Sprite
 	}
 
 	/**
-     * Global initialise function
-     */
+	 * Global initialise function
+	 */
 	private function init():Void
 	{
 		initEngine();
@@ -94,8 +94,8 @@ class Basic_LoadAWD extends Sprite
    }
 
 	/**
-     * Initialise the engine
-     */
+	 * Initialise the engine
+	 */
 	private function initEngine():Void
 	{
 		_view = new View3D();
@@ -112,8 +112,8 @@ class Basic_LoadAWD extends Sprite
 	}
 
 	/**
-     * Initialise the lights
-     */
+	 * Initialise the lights
+	 */
 	private function initLights():Void
 	{
 		//create the light for the scene
@@ -131,23 +131,23 @@ class Basic_LoadAWD extends Sprite
 	}
 
 	/**
-     * Initialise the materials
-     */
+	 * Initialise the materials
+	 */
 	private function initMaterials():Void
 	{
 	}
 
 	/**
-     * Initialise the scene objects
-     */
+	 * Initialise the scene objects
+	 */
 	private function initObjects():Void
 	{
 		_view.scene.addChild(new Mesh(new SphereGeometry(0)));
 	}
 
 	/**
-     * Initialise the listeners
-     */
+	 * Initialise the listeners
+	 */
 	private function initListeners():Void
 	{
 		stage.addEventListener(Event.RESIZE, onResize);
@@ -164,8 +164,8 @@ class Basic_LoadAWD extends Sprite
 	}
 
 	/**
-     * Navigation and render loop
-     */
+	 * Navigation and render loop
+	 */
 	private function onEnterFrame(e:Event):Void
 	{
 		if (_suzanne!=null)
@@ -175,8 +175,8 @@ class Basic_LoadAWD extends Sprite
 	}
 
 	/**
-     * Listener function for asset complete event on loader
-     */
+	 * Listener function for asset complete event on loader
+	 */
 	private function onAssetComplete (event:Asset3DEvent)
 	{
 		var asset:IAsset = event.asset;
@@ -199,8 +199,8 @@ class Basic_LoadAWD extends Sprite
 	}
 
 	/**
-     * stage listener for resize events
-     */
+	 * stage listener for resize events
+	 */
 	private function onResize(event:Event = null):Void
 	{
 		_view.width = stage.stageWidth;

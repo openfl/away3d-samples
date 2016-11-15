@@ -229,8 +229,8 @@ class Intermediate_Lines extends Sprite {
 	}
 
 	/**
-     * Initialiser function for particle properties
-     */
+	 * Initialiser function for particle properties
+	 */
 	private function initParticleFunc(prop:ParticleProperties) {
 		prop.startTime = Math.random()*10 - 10;
 		prop.duration = 10;
