@@ -123,8 +123,8 @@ class Basic_Particles extends Sprite
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
 
-        //stats
-        this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
+		//stats
+		this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**

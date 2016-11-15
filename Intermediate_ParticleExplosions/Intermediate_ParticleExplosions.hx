@@ -148,8 +148,8 @@ class Intermediate_ParticleExplosions extends Sprite
 		
 		addChild(view);
 		
-        //stats
-        this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
+		//stats
+		this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**

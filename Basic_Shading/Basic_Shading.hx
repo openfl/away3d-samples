@@ -206,25 +206,25 @@ class Basic_Shading extends Sprite
 		
 		scene.addChild(plane);
 		
-        sphere = new Mesh(new SphereGeometry(150, 40, 20), sphereMaterial);
-        sphere.x = 300;
-        sphere.y = 160;
-        sphere.z = 300;
-        
+		sphere = new Mesh(new SphereGeometry(150, 40, 20), sphereMaterial);
+		sphere.x = 300;
+		sphere.y = 160;
+		sphere.z = 300;
+		
 		scene.addChild(sphere);
 		
-        cube = new Mesh(new CubeGeometry(200, 200, 200, 1, 1, 1, false), cubeMaterial);
-        cube.x = 300;
-        cube.y = 160;
-        cube.z = -250;
-        
+		cube = new Mesh(new CubeGeometry(200, 200, 200, 1, 1, 1, false), cubeMaterial);
+		cube.x = 300;
+		cube.y = 160;
+		cube.z = -250;
+		
 		scene.addChild(cube);
 		
-        torus = new Mesh(new TorusGeometry(150, 60, 40, 20), torusMaterial);
+		torus = new Mesh(new TorusGeometry(150, 60, 40, 20), torusMaterial);
 		torus.geometry.scaleUV(10, 5);
-        torus.x = -250;
-        torus.y = 160;
-        torus.z = -250;
+		torus.x = -250;
+		torus.y = 160;
+		torus.z = -250;
 		
 		scene.addChild(torus);
 	}

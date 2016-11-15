@@ -150,7 +150,7 @@ class Intermediate_MD5Animation extends Sprite
 	public function new()
 	{
 		super();
-    	init();
+		init();
 	}
 
 	/**
@@ -206,8 +206,8 @@ class Intermediate_MD5Animation extends Sprite
 
 		addChild(view);
 
-        //stats
-        this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
+		//stats
+		this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
 	}
 
 	/**
@@ -320,17 +320,17 @@ class Intermediate_MD5Animation extends Sprite
 		bodyMaterial.shadowMethod = shadowMapMethod;
 		#end
 
-        //gob material
-        gobMaterial = new TextureMaterial(Cast.bitmapTexture("embeds/hellknight/gob.png"));
-        gobMaterial.alphaBlending = true;
-        gobMaterial.smooth = true;
-        gobMaterial.repeat = true;
-        gobMaterial.animateUVs = true;
-        gobMaterial.addMethod(this.fogMethod);
-        gobMaterial.lightPicker = this.lightPicker;
-        #if !ios
-        gobMaterial.shadowMethod = this.shadowMapMethod;
-        #end
+		//gob material
+		gobMaterial = new TextureMaterial(Cast.bitmapTexture("embeds/hellknight/gob.png"));
+		gobMaterial.alphaBlending = true;
+		gobMaterial.smooth = true;
+		gobMaterial.repeat = true;
+		gobMaterial.animateUVs = true;
+		gobMaterial.addMethod(this.fogMethod);
+		gobMaterial.lightPicker = this.lightPicker;
+		#if !ios
+		gobMaterial.shadowMethod = this.shadowMapMethod;
+		#end
 	}
 
 	/**
