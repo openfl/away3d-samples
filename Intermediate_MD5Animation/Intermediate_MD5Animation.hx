@@ -69,6 +69,7 @@ import openfl.ui.*;
 import openfl.utils.ByteArray;
 
 import openfl.Assets;
+import openfl.Vector;
 
 class Intermediate_MD5Animation extends Sprite
 {
@@ -267,7 +268,7 @@ class Intermediate_MD5Animation extends Sprite
 		#end
 		scene.addChild(whiteLight);
 
-		lightPicker = new StaticLightPicker([redLight, blueLight, whiteLight]);
+		lightPicker = new StaticLightPicker(Vector.ofArray([redLight, blueLight, whiteLight]));
 
 		//create a global shadow method
 		#if !ios
@@ -568,7 +569,7 @@ class Intermediate_MD5Animation extends Sprite
 	 */
 	private function onMouseDown(event:MouseEvent)
 	{
-		switch (event.target.name) {
+		switch (cast (event.target, DisplayObject).name) {
 			case "forward":
 				updateMovement(movementDirection = 1);
 			case "backward":
@@ -585,7 +586,7 @@ class Intermediate_MD5Animation extends Sprite
 	 */
 	private function onClick(event:MouseEvent)
 	{
-		switch (event.target.name) {
+		switch (cast (event.target, DisplayObject).name) {
 			case "action1":
 				playAction(1);
 			case "action2":
@@ -609,7 +610,7 @@ class Intermediate_MD5Animation extends Sprite
 
 	private function onMouseUp(event:MouseEvent)
 	{
-		switch (event.target.name) {
+		switch (cast (event.target, DisplayObject).name) {
 			case "forward", "backward":
 				stop();
 			case "left", "right":

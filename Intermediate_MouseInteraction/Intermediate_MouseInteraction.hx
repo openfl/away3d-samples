@@ -28,6 +28,7 @@ import openfl.utils.ByteArray;
 
 import openfl.Lib;
 import openfl.Assets;
+import openfl.Vector;
 
 class Intermediate_MouseInteraction extends Sprite
 {
@@ -167,7 +168,7 @@ class Intermediate_MouseInteraction extends Sprite
 		//create a light for the camera
 		pointLight = new PointLight();
 		scene.addChild(pointLight);
-		lightPicker = new StaticLightPicker([pointLight]);
+		lightPicker = new StaticLightPicker(Vector.ofArray([pointLight]));
 	}
 	
 	/**

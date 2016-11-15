@@ -60,6 +60,8 @@ import away3d.primitives.*;
 import away3d.tools.helpers.*;
 import away3d.utils.*;
 
+import openfl.Vector;
+
 class Intermediate_ParticleExplosions extends Sprite
 {
 	var PARTICLE_SIZE:Int = 3;
@@ -173,7 +175,7 @@ class Intermediate_ParticleExplosions extends Sprite
 		scene.addChild(blueLight);
 		
 		//create a lightpicker for the green and red light
-		lightPicker = new StaticLightPicker([greenLight, blueLight]);
+		lightPicker = new StaticLightPicker(Vector.ofArray([greenLight, blueLight]));
 	}
 	
 	/**
@@ -231,7 +233,7 @@ class Intermediate_ParticleExplosions extends Sprite
 		var plane:PlaneGeometry = new PlaneGeometry(PARTICLE_SIZE, PARTICLE_SIZE,1,1,false);
 		
 		//combine them into a list
-		var colorGeometrySet:Array<Geometry> = new Array<Geometry>();
+		var colorGeometrySet:Vector<Geometry> = new Vector<Geometry>();
 		for (i in 0...num)
 			colorGeometrySet.push(plane);
 		

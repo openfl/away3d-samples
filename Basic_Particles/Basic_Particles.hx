@@ -56,6 +56,7 @@ import away3d.utils.*;
 import openfl.display.*;
 import openfl.events.*;
 import openfl.geom.*;
+import openfl.Vector;
 
 class Basic_Particles extends Sprite
 {		
@@ -92,7 +93,7 @@ class Basic_Particles extends Sprite
 		
 		//setup the particle geometry
 		var plane:Geometry = new PlaneGeometry(10, 10, 1, 1, false);
-		var geometrySet:Array<Geometry> = new Array<Geometry>();
+		var geometrySet:Vector<Geometry> = new Vector<Geometry>();
 		for (i in 0...20000)
 			geometrySet.push(plane);
 		
