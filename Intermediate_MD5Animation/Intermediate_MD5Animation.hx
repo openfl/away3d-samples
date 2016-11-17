@@ -268,7 +268,7 @@ class Intermediate_MD5Animation extends Sprite
 		#end
 		scene.addChild(whiteLight);
 
-		lightPicker = new StaticLightPicker(Vector.ofArray([redLight, blueLight, whiteLight]));
+		lightPicker = new StaticLightPicker([redLight, blueLight, whiteLight]);
 
 		//create a global shadow method
 		#if !ios

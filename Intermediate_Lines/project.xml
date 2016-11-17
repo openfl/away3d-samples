@@ -14,7 +14,7 @@
 	<haxelib name="format" if="html5" />
 	<haxelib name="away3d" />
 	<haxelib name="openfl" />
-	<haxelib name="crashdumper"/>
+	<!-- <haxelib name="crashdumper"/> -->
 	
 	<assets path="embeds" exclude="away3d.svg" />
 

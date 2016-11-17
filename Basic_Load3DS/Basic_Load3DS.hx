@@ -111,7 +111,7 @@ class Basic_Load3DS extends Sprite
 		//setup the lights for the scene
 		_light = new DirectionalLight(-1, -1, 1);
 		_direction = new Vector3D(-1, -1, 1);
-		_lightPicker = new StaticLightPicker(Vector.ofArray([_light]));
+		_lightPicker = new StaticLightPicker([_light]);
 		_view.scene.addChild(_light);
 		
 		//setup materials

@@ -77,6 +77,7 @@ import openfl.geom.ColorTransform;
 import openfl.geom.Point;
 import openfl.geom.Vector3D;
 import openfl.utils.ByteArray;
+import openfl.Vector;
 
 class Intermediate_Lines extends Sprite {
 
@@ -201,7 +202,7 @@ class Intermediate_Lines extends Sprite {
 	private function initParticles() {
 		//setup the particle geometry
 		var plane:Geometry = new PlaneGeometry(50, 50, 1, 1, false);
-		var geometrySet:Array<Geometry> = new Array<Geometry>();
+		var geometrySet:Vector<Geometry> = new Vector<Geometry>();
 		for (i in 0...500)
 			geometrySet.push(plane);
 

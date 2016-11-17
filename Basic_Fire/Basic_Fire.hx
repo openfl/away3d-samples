@@ -161,7 +161,7 @@ class Basic_Fire extends Sprite
 		directionalLight.ambientColor = 0x808090;
 		view.scene.addChild(directionalLight);
 		
-		lightPicker = new StaticLightPicker(Vector.ofArray([directionalLight]));
+		lightPicker = new StaticLightPicker([directionalLight]);
 	}
 	
 	/**
@@ -279,9 +279,9 @@ class Basic_Fire extends Sprite
 	/**
 	 * Returns an array of active lights in the scene
 	 */
-	private function getAllLights():Vector<LightBase>
+	private function getAllLights():Array<LightBase>
 	{
-		var lights:Vector<LightBase> = new Vector<LightBase>();
+		var lights:Array<LightBase> = new Array<LightBase>();
 		
 		lights.push(directionalLight);
 		

@@ -150,7 +150,7 @@ class Intermediate_PerelithKnightMD2 extends Sprite
 		//setup the lights for the scene
 		_light = new DirectionalLight(-0.5, -1, -1);
 		_light.ambient = 0.4;
-		_lightPicker = new StaticLightPicker(Vector.ofArray([_light]));
+		_lightPicker = new StaticLightPicker([_light]);
 		_view.scene.addChild(_light);
 		
 		//setup parser to be used on AssetLibrary

@@ -163,7 +163,7 @@ class Basic_LoadDAE extends Sprite
 		_view.scene.addChild(this._light);
 
 		//create the lightppicker for the material
-		_lightPicker = new StaticLightPicker( Vector.ofArray([ this._light ]) );
+		_lightPicker = new StaticLightPicker( [ this._light ] );
 	}
 
 	/**

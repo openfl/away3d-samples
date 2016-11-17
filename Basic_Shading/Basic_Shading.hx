@@ -192,7 +192,7 @@ class Basic_Shading extends Sprite
 		
 		scene.addChild(light2);
 		
-		lightPicker = new StaticLightPicker( Vector.ofArray([ light1  , light2 ]) );
+		lightPicker = new StaticLightPicker( [ light1  , light2 ] );
 	}
 	
 	/**

@@ -175,7 +175,7 @@ class Intermediate_ParticleExplosions extends Sprite
 		scene.addChild(blueLight);
 		
 		//create a lightpicker for the green and red light
-		lightPicker = new StaticLightPicker(Vector.ofArray([greenLight, blueLight]));
+		lightPicker = new StaticLightPicker([greenLight, blueLight]);
 	}
 	
 	/**

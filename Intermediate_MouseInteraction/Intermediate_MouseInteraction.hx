@@ -168,7 +168,7 @@ class Intermediate_MouseInteraction extends Sprite
 		//create a light for the camera
 		pointLight = new PointLight();
 		scene.addChild(pointLight);
-		lightPicker = new StaticLightPicker(Vector.ofArray([pointLight]));
+		lightPicker = new StaticLightPicker([pointLight]);
 	}
 	
 	/**
