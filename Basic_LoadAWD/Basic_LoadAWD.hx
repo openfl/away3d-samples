@@ -154,7 +154,7 @@ class Basic_LoadAWD extends Sprite
 
 		onResize();
 
-		_view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 		Asset3DLibrary.enableParser(AWDParser);
 

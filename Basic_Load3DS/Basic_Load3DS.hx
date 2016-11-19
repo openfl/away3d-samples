@@ -142,7 +142,7 @@ class Basic_Load3DS extends Sprite
 		_view.scene.addChild(_loader);
 		
 		//add listeners
-		_view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);

@@ -87,8 +87,7 @@ class Basic_View extends Sprite
 		_view.scene.addChild(_plane);
 		
 		//setup the render loop
-		_view.setRenderCallback(_onEnterFrame);
-		
+		addEventListener(Event.ENTER_FRAME, _onEnterFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
 

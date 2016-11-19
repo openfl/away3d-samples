@@ -117,7 +117,7 @@ class Basic_Particles extends Sprite
 		_particleAnimator.start();
 		
 		//add listeners
-		_view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);

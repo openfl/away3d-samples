@@ -242,7 +242,7 @@ class Intermediate_Lines extends Sprite {
 	}
 
 	private function initListeners() {
-		_view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 	}
    	
 	private function onEnterFrame(e:Event) {

@@ -377,7 +377,7 @@ class Intermediate_MD5Animation extends Sprite
 	 */
 	private function initListeners()
 	{
-		view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
 	}

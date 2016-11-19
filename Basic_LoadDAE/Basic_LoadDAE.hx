@@ -230,7 +230,7 @@ class Basic_LoadDAE extends Sprite
 	private function initListeners():Void
 	{
 		// setup render loop
-		_view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 		// add mouse and resize events
 		stage.addEventListener(Event.RESIZE, onResize);

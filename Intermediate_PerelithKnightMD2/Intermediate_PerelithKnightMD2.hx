@@ -197,7 +197,7 @@ class Intermediate_PerelithKnightMD2 extends Sprite
 		_view.scene.addChild(_floor);
 				
 		//add listeners
-		_view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);

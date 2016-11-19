@@ -299,7 +299,7 @@ class Intermediate_ParticleExplosions extends Sprite
 	 */
 	private function initListeners()
 	{
-		view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);

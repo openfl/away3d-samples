@@ -108,7 +108,7 @@ class Basic_SkyBox extends Sprite
 		_view.scene.addChild(_skyBox);
 		
 		//setup the render loop
-		_view.setRenderCallback(_onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, _onEnterFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
 

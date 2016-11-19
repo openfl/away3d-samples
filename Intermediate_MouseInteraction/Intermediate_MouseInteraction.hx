@@ -385,7 +385,7 @@ class Intermediate_MouseInteraction extends Sprite
 	 */
 	private function initListeners()
 	{
-		view.setRenderCallback(onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		view.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		view.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);
