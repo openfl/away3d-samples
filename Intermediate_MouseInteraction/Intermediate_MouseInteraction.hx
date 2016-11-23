@@ -270,7 +270,7 @@ class Intermediate_MouseInteraction extends Sprite
 		// Set up a ray picking collider.
 		// Due to the number of triangles Flash used PixelBender to calculate the hit however on all other targets
 		// PixelBender is not available so has been removed.
-		model.pickingCollider = PickingColliderType.BEST_HIT;
+		model.pickingCollider = PickingColliderType.HAXE_BEST_HIT;
 		
 		// Apply mouse interactivity.
 		model.mouseEnabled = model.mouseChildren = model.shaderPickingDetails = true;
@@ -339,7 +339,7 @@ class Intermediate_MouseInteraction extends Sprite
 		// Randomly decide if the mesh has a triangle collider.
 		var usesTriangleCollider:Bool = Math.random() > 0.5;
 		if( usesTriangleCollider ) {
-			mesh.pickingCollider = PickingColliderType.FIRST_ENCOUNTERED;
+			mesh.pickingCollider = PickingColliderType.HAXE_FIRST_ENCOUNTERED;
 		}
 
 		// Enable mouse interactivity?
