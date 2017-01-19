@@ -234,7 +234,7 @@ class Basic_Shading extends Sprite
 	 */
 	private function initListeners():Void
 	{
-		view.setRenderCallback(onEnterFrame);
+		stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);
