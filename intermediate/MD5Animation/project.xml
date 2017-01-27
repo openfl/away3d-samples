@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Away3D Intermediate MD5Animation" package="away3d.samples.intermediatemd5animation" version="1.0.0" />
+	<app main="Main" file="MD5Animation" path="Export" />
+	
+	<window background="0x000000" orientation="landscape" />
+	<window width="1024" height="700" if="desktop" />
+	
+	<source path="Source" />
+	
+	<haxelib name="away3d" />
+	<haxelib name="openfl" />
+	
+	<assets path="Assets" rename="assets" exclude="away3d.svg" />
+	
+	<icon path="Assets/away3d.svg" />
+	
+</project>
