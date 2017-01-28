@@ -8,6 +8,6 @@ class BerberRevKC_260 extends FontSize
 	 
 	public static var SIZE:Int = 260;
 	
-	public static var DATA:String = "fonts/BerberRevKC_260.fnt";
-	public static var TEXTURE:String = "fonts/BerberRevKC_260.png";
+	public static var DATA:String = "assets/fonts/BerberRevKC_260.fnt";
+	public static var TEXTURE:String = "assets/fonts/BerberRevKC_260.png";
 }
