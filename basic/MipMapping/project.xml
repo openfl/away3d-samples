@@ -2,7 +2,7 @@
 <project>
 	
 	<meta title="Away3D Basic MipMapping" package="away3d.samples.basicmipmapping" version="1.0.0" />
-	<app main="Main" file="MipMapping" path="Export" />
+	<app main="Main" file="MipMapping" path="Export" swf-version="14.0" />
 	
 	<window background="0x000000" orientation="landscape" />
 	<window width="1024" height="700" if="desktop" />
