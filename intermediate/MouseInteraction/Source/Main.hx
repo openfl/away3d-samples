@@ -253,15 +253,7 @@ class Main extends Sprite
 
 		// Apply a bitmap material that can be painted on.
 		var bmd:BitmapData = new BitmapData( PAINT_TEXTURE_SIZE, PAINT_TEXTURE_SIZE, false, 0x888888 );
-		#if html5
-		// No perlin noise on html5 target
-		for (i in 0...100) {
-			var grey = Std.int(Math.random()*0xff);
-			bmd.fillRect( new Rectangle( Math.random()*PAINT_TEXTURE_SIZE, Math.random()*PAINT_TEXTURE_SIZE, Math.random()*PAINT_TEXTURE_SIZE, Math.random()*PAINT_TEXTURE_SIZE), grey<<16 | grey<<8 | grey );
-		}
-		#else
 		bmd.perlinNoise( 50, 50, 8, 1, false, true, 7, true );
-		#end
 		var bitmapTexture:BitmapTexture = new BitmapTexture( bmd );
 		var textureMaterial:TextureMaterial = new TextureMaterial( bitmapTexture );
 		textureMaterial.lightPicker = lightPicker;
