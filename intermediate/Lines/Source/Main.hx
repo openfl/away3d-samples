@@ -281,7 +281,7 @@ class Main extends Sprite {
 				lS.end.y = nextY;
 
 				// Update the current segment
-				_grid.updateSegment(lS);
+				@:privateAccess _grid.updateSegment(lS);
 
 				// Store previous height for next line segment
 				lastY = nextY;
