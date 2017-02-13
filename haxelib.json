@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": [ "away3d", "3d", "engine", "openfl", "cross", "cpp", "flash", "game", "js", "web", "ios", "android" ],
 	"description": "Away3D samples",
-	"version": "1.1.0",
-	"releasenote": "Updates icons to new Away3d/OpenFL icon. Edits now in line with latest libraries",
+	"version": "5.0.0",
+	"releasenote": "Updated for Away3D 5",
 	"contributors": [ "Greg209", "singmajesty" ]
 }
