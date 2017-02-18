@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Away3D Intermediate Onkba AWD Animation" package="away3d.samples.intermediateonkbaawdanimation" version="1.0.0" />
+	<app main="Main" file="OnkbaAWDAnimation" path="Export" />
+	
+	<window background="0x333338" orientation="landscape" />
+	<window width="1024" height="700" if="desktop" />
+	
+	<source path="Source" />
+	
+	<haxelib name="away3d" />
+	<haxelib name="openfl" />
+	
+	<assets path="Assets/onkba" rename="assets/onkba" embed="false" />
+	
+	<icon path="Assets/away3d.svg" />
+	
+</project>

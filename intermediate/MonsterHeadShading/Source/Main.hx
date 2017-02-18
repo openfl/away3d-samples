@@ -245,7 +245,7 @@ class Main extends Sprite
 		_text.selectable = false;
 		_text.mouseEnabled = true;
 		_text.wordWrap = true;
-		_text.filters = [new DropShadowFilter(1, 45, 0x0, 1, 0, 0)];
+		//_text.filters = [new DropShadowFilter(1, 45, 0x0, 1, 0, 0)];
 		addChild(_text);
 	}
 	

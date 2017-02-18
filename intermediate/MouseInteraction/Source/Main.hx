@@ -152,7 +152,7 @@ class Main extends Sprite
 		text.appendText("  Blue objects have bounds picking precision. \n" );
 		text.appendText("  Gray objects are disabled for picking but occlude picking on other objects. \n" );
 		text.appendText("  Black objects are completely ignored for picking. \n" );
-		text.filters = [new DropShadowFilter(1, 45, 0x0, 1, 0, 0)];
+		//text.filters = [new DropShadowFilter(1, 45, 0x0, 1, 0, 0)];
 		addChild(text);
 	}
 	
