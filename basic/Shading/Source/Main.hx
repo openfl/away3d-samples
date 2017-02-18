@@ -53,9 +53,8 @@ import openfl.display.*;
 import openfl.events.*;
 import openfl.geom.*;
 import openfl.utils.*;
-
-import openfl.Lib;
 import openfl.Assets;
+import openfl.Lib;
 import openfl.Vector;
 
 class Main extends Sprite
@@ -71,7 +70,7 @@ class Main extends Sprite
 	private var sphereMaterial:TextureMaterial;
 	private var cubeMaterial:TextureMaterial;
 	private var torusMaterial:TextureMaterial;
-
+	
 	//light objects
 	private var light1:DirectionalLight;
 	private var light2:DirectionalLight;
@@ -96,7 +95,7 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-
+		
 		init();
 	}
 	
@@ -123,12 +122,11 @@ class Main extends Sprite
 		scene = new Scene3D();
 		
 		camera = new Camera3D();
-
+		
 		view = new View3D();
 		view.antiAlias = 4;
 		view.scene = scene;
 		view.camera = camera;
-		addChild(view);
 		
 		//setup controller to be used on the camera
 		cameraController = new HoverController(camera);
@@ -138,8 +136,9 @@ class Main extends Sprite
 		cameraController.panAngle = 45;
 		cameraController.tiltAngle = 20;
 		
-		// stats
-		this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
+		addChild(view);
+		
+		addChild(new AwayStats(view));
 	}
 	
 	/**
@@ -147,17 +146,17 @@ class Main extends Sprite
 	 */
 	private function initMaterials():Void
 	{
-		
 		planeMaterial = new TextureMaterial(Cast.bitmapTexture("assets/floor_diffuse.jpg"));
 		planeMaterial.specularMap = Cast.bitmapTexture("assets/floor_specular.jpg");
 		planeMaterial.normalMap = Cast.bitmapTexture("assets/floor_normal.jpg");
 		planeMaterial.lightPicker = lightPicker;
 		planeMaterial.repeat = true;
+		planeMaterial.mipmap = false;
 		
 		sphereMaterial = new TextureMaterial(Cast.bitmapTexture("assets/beachball_diffuse.jpg"));
 		sphereMaterial.specularMap = Cast.bitmapTexture("assets/beachball_specular.jpg");
 		sphereMaterial.lightPicker = lightPicker;
-
+		
 		cubeMaterial = new TextureMaterial(Cast.bitmapTexture("assets/trinket_diffuse.jpg"));
 		cubeMaterial.specularMap = Cast.bitmapTexture("assets/trinket_specular.jpg");
 		cubeMaterial.normalMap = Cast.bitmapTexture("assets/trinket_normal.jpg");
@@ -192,7 +191,7 @@ class Main extends Sprite
 		
 		scene.addChild(light2);
 		
-		lightPicker = new StaticLightPicker( [ light1  , light2 ] );
+		lightPicker = new StaticLightPicker([light1, light2]);
 	}
 	
 	/**
@@ -206,25 +205,25 @@ class Main extends Sprite
 		
 		scene.addChild(plane);
 		
-		sphere = new Mesh(new SphereGeometry(150, 40, 20), sphereMaterial);
-		sphere.x = 300;
-		sphere.y = 160;
-		sphere.z = 300;
-		
+        sphere = new Mesh(new SphereGeometry(150, 40, 20), sphereMaterial);
+        sphere.x = 300;
+        sphere.y = 160;
+        sphere.z = 300;
+        
 		scene.addChild(sphere);
 		
-		cube = new Mesh(new CubeGeometry(200, 200, 200, 1, 1, 1, false), cubeMaterial);
-		cube.x = 300;
-		cube.y = 160;
-		cube.z = -250;
-		
+        cube = new Mesh(new CubeGeometry(200, 200, 200, 1, 1, 1, false), cubeMaterial);
+        cube.x = 300;
+        cube.y = 160;
+        cube.z = -250;
+        
 		scene.addChild(cube);
 		
-		torus = new Mesh(new TorusGeometry(150, 60, 40, 20), torusMaterial);
+        torus = new Mesh(new TorusGeometry(150, 60, 40, 20), torusMaterial);
 		torus.geometry.scaleUV(10, 5);
-		torus.x = -250;
-		torus.y = 160;
-		torus.z = -250;
+        torus.x = -250;
+        torus.y = 160;
+        torus.z = -250;
 		
 		scene.addChild(torus);
 	}
@@ -234,7 +233,7 @@ class Main extends Sprite
 	 */
 	private function initListeners():Void
 	{
-		stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);
@@ -247,8 +246,8 @@ class Main extends Sprite
 	private function onEnterFrame(event:Event):Void
 	{
 		if (move) {
-		 	cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
-		 	cameraController.tiltAngle = 0.3*(stage.mouseY - lastMouseY) + lastTiltAngle;
+			cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
+			cameraController.tiltAngle = 0.3*(stage.mouseY - lastMouseY) + lastTiltAngle;
 		}
 		
 		light1.direction = new Vector3D(Math.sin(Lib.getTimer()/10000)*150000, 1000, Math.cos(Lib.getTimer()/10000)*150000);

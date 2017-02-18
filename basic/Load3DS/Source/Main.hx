@@ -40,6 +40,7 @@ package;
 
 import away3d.containers.*;
 import away3d.controllers.*;
+import away3d.debug.*;
 import away3d.entities.*;
 import away3d.events.*;
 import away3d.library.assets.*;
@@ -57,10 +58,8 @@ import openfl.display.*;
 import openfl.events.*;
 import openfl.geom.*;
 import openfl.utils.*;
-
-import openfl.Lib;
-
 import openfl.Assets;
+import openfl.Lib;
 import openfl.Vector;
 
 class Main extends Sprite
@@ -87,7 +86,7 @@ class Main extends Sprite
 	private var _lastTiltAngle:Float;
 	private var _lastMouseX:Float;
 	private var _lastMouseY:Float;
-
+	
 	/**
 	 * Constructor
 	 */
@@ -97,10 +96,10 @@ class Main extends Sprite
 
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
-
+		
 		//setup the view
 		_view = new View3D();
-		this.addChild(_view);
+		addChild(_view);
 		
 		//setup the camera for optimal shadow rendering
 		_view.camera.lens.far = 2100;
@@ -114,32 +113,29 @@ class Main extends Sprite
 		_lightPicker = new StaticLightPicker([_light]);
 		_view.scene.addChild(_light);
 		
-		//setup materials
-		_groundMaterial = new TextureMaterial(Cast.bitmapTexture("assets/CoarseRedSand.jpg"));
-		#if !ios
-		_groundMaterial.shadowMethod = new SoftShadowMapMethod( _light, 10, 5 );
-		_groundMaterial.shadowMethod.epsilon = 0.2;
-		#end
-		_groundMaterial.lightPicker = _lightPicker;
-		_groundMaterial.specular = 0;
-		_ground = new Mesh(new PlaneGeometry(1000, 1000), _groundMaterial);
-		_ground.castsShadows =false;
-		_view.scene.addChild(_ground);
-		
-		//setup parser to be used on Loader3D
-		Parsers.enableAllBundled();
-		
 		//setup the url map for textures in the 3ds file
 		var assetLoaderContext:AssetLoaderContext = new AssetLoaderContext();
 		assetLoaderContext.mapUrlToData("texture.jpg", Assets.getBitmapData("assets/soldier_ant.jpg"));
+		
+		//setup materials
+		_groundMaterial = new TextureMaterial(Cast.bitmapTexture("assets/CoarseRedSand.jpg"));
+		_groundMaterial.shadowMethod = new FilteredShadowMapMethod(_light);
+		_groundMaterial.shadowMethod.epsilon = 0.2;
+		_groundMaterial.lightPicker = _lightPicker;
+		_groundMaterial.specular = 0;
+		_ground = new Mesh(new PlaneGeometry(1000, 1000), _groundMaterial);
+		_view.scene.addChild(_ground);
 		
 		//setup the scene
 		_loader = new Loader3D();
 		_loader.scale(300);
 		_loader.z = -200;
 		_loader.addEventListener(Asset3DEvent.ASSET_COMPLETE, onAssetComplete);
-		_loader.loadData( Assets.getBytes("assets/soldier_ant.3ds"), assetLoaderContext);
+		_loader.loadData(Assets.getBytes("assets/soldier_ant.3ds"), assetLoaderContext, null, new Max3DSParser(false));
 		_view.scene.addChild(_loader);
+		
+		//add stats panel
+		addChild(new AwayStats(_view));
 		
 		//add listeners
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -147,9 +143,6 @@ class Main extends Sprite
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
-
-		// stats
-		this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**
@@ -163,7 +156,7 @@ class Main extends Sprite
 		}
 		
 		_direction.x = -Math.sin(Lib.getTimer()/4000);
-		_direction.z = -Math.cos(Lib.getTimer()/4000);	
+		_direction.z = -Math.cos(Lib.getTimer()/4000);
 		_light.direction = _direction;
 		
 		_view.render();
@@ -175,15 +168,12 @@ class Main extends Sprite
 	private function onAssetComplete(e:Event):Void
 	{
 		var event:Asset3DEvent = cast(e, Asset3DEvent);
-		if (event.asset.assetType == away3d.library.assets.Asset3DType.MESH) {
+		if (event.asset.assetType == Asset3DType.MESH) {
 			var mesh:Mesh = cast(event.asset, Mesh);
-			//mesh.castsShadows = true;
-		} else if (event.asset.assetType == away3d.library.assets.Asset3DType.MATERIAL) {
+			mesh.castsShadows = true;
+		} else if (event.asset.assetType == Asset3DType.MATERIAL) {
 			var material:TextureMaterial = cast(event.asset, TextureMaterial);
-			#if !ios
-			material.shadowMethod = new SoftShadowMapMethod( _light, 10, 5 );
-			material.shadowMethod.epsilon = 0.2;
-			#end
+			material.shadowMethod = new FilteredShadowMapMethod(_light);
 			material.lightPicker = _lightPicker;
 			material.gloss = 30;
 			material.specular = 1;
@@ -204,7 +194,7 @@ class Main extends Sprite
 		_move = true;
 		stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
 	}
-
+	
 	/**
 	 * Mouse up listener for navigation
 	 */
@@ -232,4 +222,3 @@ class Main extends Sprite
 		_view.height = stage.stageHeight;
 	}
 }
-

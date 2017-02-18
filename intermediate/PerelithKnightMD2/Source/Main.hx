@@ -43,6 +43,7 @@ package;
 import away3d.animators.*;
 import away3d.containers.*;
 import away3d.controllers.*;
+import away3d.debug.*;
 import away3d.entities.*;
 import away3d.events.*;
 import away3d.library.*;
@@ -62,7 +63,6 @@ import openfl.geom.*;
 import openfl.text.*;
 import openfl.ui.*;
 import openfl.utils.ByteArray;
-
 import openfl.Assets;
 import openfl.Vector;
 
@@ -72,14 +72,15 @@ class Main extends Sprite
 	//Perelith Knight model
 	public static var PKnightModel:ByteArray;
 	
-	private var _pKnightMaterials:Array<TextureMaterial> = new Array<TextureMaterial>();
+	//array of textures for random sampling
+	private var _pKnightMaterials:Vector<TextureMaterial> = new Vector<TextureMaterial>();
 	
 	//engine variables
 	private var _view:View3D;
 	private var _cameraController:HoverController;
-		
-	//info
-	private var _info:TextField;
+	
+	//stats
+	private var _stats:AwayStats;
 	
 	//light objects
 	private var _light:DirectionalLight;
@@ -94,7 +95,7 @@ class Main extends Sprite
 	private var _mesh:Mesh;
 	
 	//navigation variables
-	private var _move:Bool;
+	private var _move:Bool = false;
 	private var _lastPanAngle:Float;
 	private var _lastTiltAngle:Float;
 	private var _lastMouseX:Float;
@@ -103,7 +104,7 @@ class Main extends Sprite
 	private var _keyDown:Bool;
 	private var _keyLeft:Bool;
 	private var _keyRight:Bool;
-	private var _lookAtPosition:Vector3D;
+	private var _lookAtPosition:Vector3D = new Vector3D();
 	private var _animationSet:VertexAnimationSet;
 	
 	/**
@@ -112,10 +113,7 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-
-		_move = false;
-		_lookAtPosition = new Vector3D();
-
+		
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		
@@ -130,22 +128,22 @@ class Main extends Sprite
 		_cameraController = new HoverController(_view.camera, null, 45, 20, 2000, 5);
 		
 		//setup the help text
-		_info = new TextField();
-		_info.defaultTextFormat = new TextFormat("Verdana", 11, 0xFFFFFF);
-		_info.embedFonts = true;
-		_info.antiAliasType = AntiAliasType.ADVANCED;
-		_info.gridFitType = GridFitType.PIXEL;
-		_info.width = 240;
-		_info.height = 100;
-		_info.selectable = false;
-		_info.mouseEnabled = false;
-		_info.text = "Click and drag - rotate\n" + 
+		var text:TextField = new TextField();
+		text.defaultTextFormat = new TextFormat("_sans", 11, 0xFFFFFF);
+		text.embedFonts = true;
+		text.antiAliasType = AntiAliasType.ADVANCED;
+		text.gridFitType = GridFitType.PIXEL;
+		text.width = 240;
+		text.height = 100;
+		text.selectable = false;
+		text.mouseEnabled = false;
+		text.text = "Click and drag - rotate\n" + 
 			"Cursor keys / WSAD / ZSQD - move\n" + 
 			"Scroll wheel - zoom";
 		
-		_info.filters = [new DropShadowFilter(1, 45, 0x0, 1, 0, 0)];
+		//text.filters = [new DropShadowFilter(1, 45, 0x0, 1, 0, 0)];
 		
-		addChild(_info);
+		addChild(text);
 		
 		//setup the lights for the scene
 		_light = new DirectionalLight(-0.5, -1, -1);
@@ -160,18 +158,14 @@ class Main extends Sprite
 		Asset3DLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceComplete);
 		
 		//create a global shadow map method
-		#if !ios
 		_shadowMapMethod = new FilteredShadowMapMethod(_light);
-		#end
 		
 		//setup floor material
 		_floorMaterial = new TextureMaterial(Cast.bitmapTexture("assets/floor_diffuse.jpg"));
 		_floorMaterial.lightPicker = _lightPicker;
 		_floorMaterial.specular = 0;
 		_floorMaterial.ambient = 1;
-		#if !ios
 		_floorMaterial.shadowMethod = _shadowMapMethod;
-		#end
 		_floorMaterial.repeat = true;
 		
 		//setup Perelith Knight materials
@@ -183,9 +177,7 @@ class Main extends Sprite
 			knightMaterial.gloss = 30;
 			knightMaterial.specular = 1;
 			knightMaterial.ambient = 1;
-			#if !ios
 			knightMaterial.shadowMethod = _shadowMapMethod;
-			#end
 			_pKnightMaterials.push(knightMaterial);
 		}
 		
@@ -195,7 +187,10 @@ class Main extends Sprite
 		
 		//setup the scene
 		_view.scene.addChild(_floor);
-				
+		
+		//add stats panel
+		addChild(_stats = new AwayStats(_view));
+		
 		//add listeners
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -206,15 +201,12 @@ class Main extends Sprite
 		stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
-
-		//stats
-		this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**
 	 * Navigation and render loop
 	 */
-	private function onEnterFrame(event:Event)
+	private function onEnterFrame(event:Event):Void
 	{
 		if (_move) {
 			_cameraController.panAngle = 0.3*(stage.mouseX - _lastMouseX) + _lastPanAngle;
@@ -238,7 +230,7 @@ class Main extends Sprite
 	/**
 	 * Listener function for asset complete event on loader
 	 */
-	private function onAssetComplete(event:Asset3DEvent)
+	private function onAssetComplete(event:Asset3DEvent):Void
 	{
 		if (event.asset.assetType == Asset3DType.MESH) {
 			_mesh = cast(event.asset, Mesh);
@@ -255,16 +247,16 @@ class Main extends Sprite
 	/**
 	 * Listener function for resource complete event on loader
 	 */
-	private function onResourceComplete(event:LoaderEvent)
+	private function onResourceComplete(event:LoaderEvent):Void
 	{
 		//create 20 x 20 different clones of the ogre
-		var numWide:UInt = 20;
-		var numDeep:UInt = 20;
-		var k:UInt = 0;
+		var numWide:Int = 20;
+		var numDeep:Int = 20;
+		var k:Int = 0;
 		for (i in  0...numWide) {
 			for (j in 0...numDeep) {
 				//clone mesh
-				var clone:Mesh = cast(_mesh.clone(), Mesh);
+				var clone:Mesh = cast _mesh.clone();
 				clone.x = (i-(numWide-1)/2)*5000/numWide;
 				clone.z = (j-(numDeep-1)/2)*5000/numDeep;
 				clone.castsShadows = true;
@@ -281,18 +273,19 @@ class Main extends Sprite
 			}
 		}
 	}
-
 	/**
 	 * Key down listener for animation
 	 */
-	private function onKeyDown(event:KeyboardEvent)
+	private function onKeyDown(event:KeyboardEvent):Void
 	{
 		switch (event.keyCode) {
-			case Keyboard.UP, Keyboard.W, Keyboard.Z: //fr
+			case Keyboard.UP, Keyboard.W,
+				Keyboard.Z: //fr
 				_keyUp = true;
 			case Keyboard.DOWN, Keyboard.S: 
 				_keyDown = true;
-			case Keyboard.LEFT, Keyboard.A, Keyboard.Q: //fr
+			case Keyboard.LEFT, Keyboard.A,
+				Keyboard.Q: //fr
 				_keyLeft = true;
 			case Keyboard.RIGHT, Keyboard.D: 
 				_keyRight = true;
@@ -302,14 +295,16 @@ class Main extends Sprite
 	/**
 	 * Key up listener
 	 */
-	private function onKeyUp(event:KeyboardEvent)
+	private function onKeyUp(event:KeyboardEvent):Void
 	{
 		switch (event.keyCode) {
-			case Keyboard.UP, Keyboard.W, Keyboard.Z: //fr
+			case Keyboard.UP, Keyboard.W,
+				Keyboard.Z: //fr
 				_keyUp = false;
 			case Keyboard.DOWN, Keyboard.S: 
 				_keyDown = false;
-			case Keyboard.LEFT, Keyboard.A, Keyboard.Q: //fr
+			case Keyboard.LEFT, Keyboard.A,
+				Keyboard.Q: //fr
 				_keyLeft = false;
 			case Keyboard.RIGHT, Keyboard.D: 
 				_keyRight = false;
@@ -319,7 +314,7 @@ class Main extends Sprite
 	/**
 	 * Mouse down listener for navigation
 	 */
-	private function onMouseDown(event:MouseEvent)
+	private function onMouseDown(event:MouseEvent):Void
 	{
 		_lastPanAngle = _cameraController.panAngle;
 		_lastTiltAngle = _cameraController.tiltAngle;
@@ -331,7 +326,7 @@ class Main extends Sprite
 	/**
 	 * Mouse up listener for navigation
 	 */
-	private function onMouseUp(event:Event)
+	private function onMouseUp(event:Event):Void
 	{
 		_move = false;
 	}
@@ -339,7 +334,7 @@ class Main extends Sprite
 	/**
 	 * Mouse wheel listener for navigation
 	 */
-	private function onMouseWheel(ev:MouseEvent)
+	private function onMouseWheel(ev:MouseEvent):Void
 	{
 		_cameraController.distance -= ev.delta * 5;
 		
@@ -352,11 +347,10 @@ class Main extends Sprite
 	/**
 	 * Stage listener for resize events
 	 */
-	private function onResize(event:Event = null)
+	private function onResize(event:Event = null):Void
 	{
 		_view.width = stage.stageWidth;
 		_view.height = stage.stageHeight;
-		_info.x = stage.stageWidth - 240;
+		_stats.x = stage.stageWidth - _stats.width;
 	}
 }
-

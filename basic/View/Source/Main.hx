@@ -1,12 +1,12 @@
 /*
 
-3D Tweening example in Away3d
+Basic View example in Away3d
 
 Demonstrates:
 
-How to use Tweener within a 3D coordinate system.
-How to create a 3D mouse event listener on a scene object.
-How to return the scene coordinates of a mouse click on the surface of a scene object.
+How to create a 3D environment for your objects
+How to add a new textured object to your world
+How to rotate an object in your world
 
 Code by Rob Bateman
 rob@infiniteturtles.co.uk
@@ -38,50 +38,43 @@ THE SOFTWARE.
 
 package;
 
-import away3d.containers.View3D;
-import away3d.debug.*;
-import away3d.entities.Mesh;
-import away3d.materials.TextureMaterial;
-import away3d.primitives.PlaneGeometry;
-import away3d.utils.Cast;
+import away3d.containers.*;
+import away3d.entities.*;
+import away3d.materials.*;
+import away3d.primitives.*;
+import away3d.utils.*;
 
-import openfl.display.StageScaleMode;
-import openfl.display.StageAlign;
-import openfl.display.Sprite;
-import openfl.display.BitmapData;
-import openfl.display.Bitmap;
-import openfl.events.Event;
+import openfl.display.*;
+import openfl.events.*;
 import openfl.geom.Vector3D;
-import openfl.Lib;
-import haxe.Timer;
 
 class Main extends Sprite
-{	
+{
 	//engine variables
 	private var _view:View3D;
 	
 	//scene objects
 	private var _plane:Mesh;
-
+	
 	/**
 	 * Constructor
 	 */
-	public function new ()
+	public function new()
 	{
 		super();
-
+		
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
-
+		
 		//setup the view
 		_view = new View3D();
-		this.addChild(_view);
+		addChild(_view);
 		
 		//setup the camera
 		_view.camera.z = -600;
-		_view.camera.y = 200;
+		_view.camera.y = 500;
 		_view.camera.lookAt(new Vector3D());
-
+		
 		//setup the scene
 		_plane = new Mesh(new PlaneGeometry(700, 700), new TextureMaterial(Cast.bitmapTexture("assets/floor_diffuse.jpg")));
 		_view.scene.addChild(_plane);
@@ -90,15 +83,11 @@ class Main extends Sprite
 		addEventListener(Event.ENTER_FRAME, _onEnterFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
-
-		// stats
-		this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**
 	 * render loop
 	 */
-	private static var ctr:Float = 0;
 	private function _onEnterFrame(e:Event):Void
 	{
 		_plane.rotationY += 1;

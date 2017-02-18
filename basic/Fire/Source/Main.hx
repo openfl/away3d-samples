@@ -52,6 +52,7 @@ import away3d.cameras.*;
 import away3d.containers.*;
 import away3d.controllers.*;
 import away3d.core.base.*;
+import away3d.debug.*;
 import away3d.entities.*;
 import away3d.lights.*;
 import away3d.materials.*;
@@ -62,37 +63,37 @@ import away3d.utils.*;
 
 class Main extends Sprite
 {
-	private static var NUM_FIRES:UInt = 10;
+	private static inline var NUM_FIRES:UInt = 10;
 	
 	//engine variables
-	var scene:Scene3D;
-	var camera:Camera3D;
-	var view:View3D;
-	var cameraController:HoverController;
-			
+	private var scene:Scene3D;
+	private var camera:Camera3D;
+	private var view:View3D;
+	private var cameraController:HoverController;
+	
 	//material objects
-	var planeMaterial:TextureMultiPassMaterial;
-	var particleMaterial:TextureMaterial;
+	private var planeMaterial:TextureMultiPassMaterial;
+	private var particleMaterial:TextureMaterial;
 	
 	//light objects
-	var directionalLight:DirectionalLight;
-	var lightPicker:StaticLightPicker;
+	private var directionalLight:DirectionalLight;
+	private var lightPicker:StaticLightPicker;
 	
 	//particle objects
-	var fireAnimationSet:ParticleAnimationSet;
-	var particleGeometry:ParticleGeometry;
-	var timer:Timer;
+	private var fireAnimationSet:ParticleAnimationSet;
+	private var particleGeometry:ParticleGeometry;
+	private var timer:Timer;
 	
 	//scene objects
-	var plane:Mesh;
-	var fireObjects:Array<FireVO>;
+	private var plane:Mesh;
+	private var fireObjects:Vector<FireVO> = new Vector<FireVO>();
 	
 	//navigation variables
-	var move:Bool = false;
-	var lastPanAngle:Float;
-	var lastTiltAngle:Float;
-	var lastMouseX:Float;
-	var lastMouseY:Float;
+	private var move:Bool = false;
+	private var lastPanAngle:Float;
+	private var lastTiltAngle:Float;
+	private var lastMouseX:Float;
+	private var lastMouseY:Float;
 	
 	/**
 	 * Constructor
@@ -106,7 +107,7 @@ class Main extends Sprite
 	/**
 	 * Global initialise function
 	 */
-	private function init()
+	private function init():Void
 	{
 		initEngine();
 		initLights();
@@ -119,7 +120,7 @@ class Main extends Sprite
 	/**
 	 * Initialise the engine
 	 */
-	private function initEngine()
+	private function initEngine():Void
 	{
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
@@ -143,8 +144,7 @@ class Main extends Sprite
 		
 		addChild(view);
 		
-		//stats
-		this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
+		addChild(new AwayStats(view));
 	}
 	
 	/**
@@ -184,7 +184,7 @@ class Main extends Sprite
 	/**
 	 * Initialise the particles
 	 */
-	private function initParticles()
+	private function initParticles():Void
 	{
 		
 		//create the particle animation set
@@ -217,10 +217,8 @@ class Main extends Sprite
 	/**
 	 * Initialise the scene objects
 	 */
-	private function initObjects()
+	private function initObjects():Void
 	{
-		fireObjects = new Array<FireVO>();
-		
 		plane = new Mesh(new PlaneGeometry(1000, 1000), planeMaterial);
 		plane.geometry.scaleUV(2, 2);
 		plane.y = -20;
@@ -253,7 +251,7 @@ class Main extends Sprite
 	/**
 	 * Initialise the listeners
 	 */
-	private function initListeners()
+	private function initListeners():Void
 	{
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -265,7 +263,7 @@ class Main extends Sprite
 	/**
 	 * Initialiser function for particle properties
 	 */
-	private function initParticleFunc(prop:ParticleProperties)
+	private function initParticleFunc(prop:ParticleProperties):Void
 	{
 		prop.startTime = Math.random()*5;
 		prop.duration = Math.random() * 4 + 0.1;
@@ -273,7 +271,7 @@ class Main extends Sprite
 		var degree1:Float = Math.random() * Math.PI * 2;
 		var degree2:Float = Math.random() * Math.PI * 2;
 		var r:Float = 15;
-		prop.nodes.set(ParticleVelocityNode.VELOCITY_VECTOR3D, new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2)));
+		prop.nodes[ParticleVelocityNode.VELOCITY_VECTOR3D] = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
 	}
 	
 	/**
@@ -285,7 +283,6 @@ class Main extends Sprite
 		
 		lights.push(directionalLight);
 		
-		var fireVO:FireVO;
 		for (fireVO in fireObjects)
 			if (fireVO.light != null)
 				lights.push(fireVO.light);
@@ -296,7 +293,7 @@ class Main extends Sprite
 	/**
 	 * Timer event handler
 	 */
-	private function onTimer(e:TimerEvent)
+	private function onTimer(e:TimerEvent):Void
 	{
 		var fireObject:FireVO = fireObjects[timer.currentCount-1];
 		
@@ -320,7 +317,7 @@ class Main extends Sprite
 	/**
 	 * Navigation and render loop
 	 */
-	private function onEnterFrame(event:Event)
+	private function onEnterFrame(event:Event):Void
 	{
 		if (move) {
 			cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
@@ -333,7 +330,7 @@ class Main extends Sprite
 			//update flame light
 			var light : PointLight = fireVO.light;
 			
-			if (light==null)
+			if (light == null)
 				continue;
 			
 			if (fireVO.strength < 1)
@@ -350,7 +347,7 @@ class Main extends Sprite
 	/**
 	 * Mouse down listener for navigation
 	 */
-	private function onMouseDown(event:MouseEvent)
+	private function onMouseDown(event:MouseEvent):Void
 	{
 		lastPanAngle = cameraController.panAngle;
 		lastTiltAngle = cameraController.tiltAngle;
@@ -363,7 +360,7 @@ class Main extends Sprite
 	/**
 	 * Mouse up listener for navigation
 	 */
-	private function onMouseUp(event:MouseEvent)
+	private function onMouseUp(event:MouseEvent):Void
 	{
 		move = false;
 		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
@@ -372,7 +369,7 @@ class Main extends Sprite
 	/**
 	 * Mouse stage leave listener for navigation
 	 */
-	private function onStageMouseLeave(event:Event)
+	private function onStageMouseLeave(event:Event):Void
 	{
 		move = false;
 		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
@@ -381,7 +378,7 @@ class Main extends Sprite
 	/**
 	 * stage listener for resize events
 	 */
-	private function onResize(event:Event = null)
+	private function onResize(event:Event = null):Void
 	{
 		view.width = stage.stageWidth;
 		view.height = stage.stageHeight;
@@ -393,14 +390,14 @@ class Main extends Sprite
 */
 class FireVO
 {
-public var mesh : Mesh;
-public var animator : ParticleAnimator;
-public var light : PointLight;
-public var strength : Float = 0;
-
-public function new(mesh:Mesh, animator:ParticleAnimator)
-{
-	this.mesh = mesh;
-	this.animator = animator;
-}
+	public var mesh : Mesh;
+	public var animator : ParticleAnimator;
+	public var light : PointLight;
+	public var strength : Float = 0;
+	
+	public function new(mesh:Mesh, animator:ParticleAnimator)
+	{
+		this.mesh = mesh;
+		this.animator = animator;
+	}
 }

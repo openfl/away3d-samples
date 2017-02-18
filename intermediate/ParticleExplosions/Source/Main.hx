@@ -1,6 +1,6 @@
 ﻿/*
 
-Particle explosions in Away3D using the Adobe AIR and Adobe Flash Player logos
+Particle explosions in Away3D using the OpenFL and Haxe logos
 
 Demonstrates:
 
@@ -52,6 +52,7 @@ import away3d.cameras.*;
 import away3d.containers.*;
 import away3d.controllers.*;
 import away3d.core.base.*;
+import away3d.debug.*;
 import away3d.entities.*;
 import away3d.lights.*;
 import away3d.materials.*;
@@ -64,46 +65,51 @@ import openfl.Vector;
 
 class Main extends Sprite
 {
-	var PARTICLE_SIZE:Int = 3;
-	var NUM_ANIMATORS:Int = 1;
-			
+	private static inline var PARTICLE_SIZE:Int = 3;
+	private static inline var NUM_ANIMATORS:Int = 4;
+	
 	//engine variables
-	var scene:Scene3D;
-	var camera:Camera3D;
-	var view:View3D;
-	var cameraController:HoverController;
+	private var scene:Scene3D;
+	private var camera:Camera3D;
+	private var view:View3D;
+	private var cameraController:HoverController;
 	
 	//light variables
-	var greenLight:PointLight;
-	var blueLight:PointLight;
-	var lightPicker:StaticLightPicker;
+	private var greenLight:PointLight;
+	private var orangeLight:PointLight;
+	//private var whitelight:DirectionalLight;
+	//private var direction:Vector3D = new Vector3D();
+	private var lightPicker:StaticLightPicker;
 	
 	//data variables
-	var colorValues:Array<Vector3D>;
-	var colorPoints:Array<Vector3D>;
-	var colorPlayerSeparation:Int;
-	var colorAway3DSeparation:Int;
-	var colorOpenFLSeparation:Int;
-	var colorPlatformsSeparation:Int;
+	private var bluePoints:Vector<Vector3D> = new Vector<Vector3D>();
+	private var whitePoints:Vector<Vector3D> = new Vector<Vector3D>();
+	private var blueSeparation:Int;
+	private var whiteSeparation:Int;
 	
 	//material objects
-	var colorMaterial:ColorMaterial;
+	private var whiteMaterial:ColorMaterial;
+	private var blueMaterial:ColorMaterial;
 	
 	//particle objects
-	var colorGeometry:ParticleGeometry;
-	var colorAnimationSet:ParticleAnimationSet;
+	private var blueGeometry:ParticleGeometry;
+	private var whiteGeometry:ParticleGeometry;
+	private var blueAnimationSet:ParticleAnimationSet;
+	private var whiteAnimationSet:ParticleAnimationSet;
 	
 	//scene objects
-	var colorParticleMesh:Mesh;
-	var colorAnimators:Array<ParticleAnimator>;
+	private var blueParticleMesh:Mesh;
+	private var whiteParticleMesh:Mesh;
+	private var blueAnimators:Vector<ParticleAnimator>;
+	private var whiteAnimators:Vector<ParticleAnimator>;
 	
 	//navigation variables
-	var angle:Float = 0;
-	var move:Bool = false;
-	var lastPanAngle:Float;
-	var lastTiltAngle:Float;
-	var lastMouseX:Float;
-	var lastMouseY:Float;
+	private var angle:Float = 0;
+	private var move:Bool = false;
+	private var lastPanAngle:Float;
+	private var lastTiltAngle:Float;
+	private var lastMouseX:Float;
+	private var lastMouseY:Float;
 	
 	/**
 	 * Constructor
@@ -117,7 +123,7 @@ class Main extends Sprite
 	/**
 	 * Global initialise function
 	 */
-	private function init()
+	private function init():Void
 	{
 		initEngine();
 		initLights();
@@ -130,7 +136,7 @@ class Main extends Sprite
 	/**
 	 * Initialise the engine
 	 */
-	private function initEngine()
+	private function initEngine():Void
 	{
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
@@ -148,14 +154,13 @@ class Main extends Sprite
 		
 		addChild(view);
 		
-		//stats
-		this.addChild(new away3d.debug.AwayFPS(view, 10, 10, 0xffffff, 3));
+		addChild(new AwayStats(view));
 	}
 	
 	/**
 	 * Initialise the lights
 	 */
-	private function initLights()
+	private function initLights():Void
 	{
 		//create a green point light
 		greenLight = new PointLight();
@@ -166,138 +171,151 @@ class Main extends Sprite
 		greenLight.specular = 2;
 		scene.addChild(greenLight);
 		
-		//create a red pointlight
-		blueLight = new PointLight();
-		blueLight.color = 0x0000FF;
-		blueLight.fallOff = 600;
-		blueLight.radius = 100;
-		blueLight.specular = 2;
-		scene.addChild(blueLight);
+		//create a blue pointlight
+		orangeLight = new PointLight();
+		orangeLight.color = 0xFF9900;
+		orangeLight.fallOff = 600;
+		orangeLight.radius = 100;
+		orangeLight.specular = 2;
+		scene.addChild(orangeLight);
 		
-		//create a lightpicker for the green and red light
-		lightPicker = new StaticLightPicker([greenLight, blueLight]);
+		//create a lightpicker for the green and blue light
+		lightPicker = new StaticLightPicker([greenLight, orangeLight]);
 	}
 	
 	/**
 	 * Initialise the materials
 	 */
-	private function initMaterials()
+	private function initMaterials():Void
 	{
-		//setup the particle material
-		colorMaterial = new ColorMaterial(0xFFFFFF);
-		colorMaterial.alphaPremultiplied = true;
-		colorMaterial.bothSides = true;
-		colorMaterial.lightPicker = lightPicker;
+		
+		//setup the blue particle material
+		blueMaterial = new ColorMaterial(0x24AFC4);
+		blueMaterial.alphaPremultiplied = true;
+		blueMaterial.bothSides = true;
+		blueMaterial.lightPicker = lightPicker;
+		
+		//setup the white particle material
+		whiteMaterial = new ColorMaterial(0xFFFFFF, 0.2);
+		whiteMaterial.alphaPremultiplied = true;
+		whiteMaterial.bothSides = true;
+		whiteMaterial.lightPicker = lightPicker;
 	}
 	
 	/**
 	 * Initialise the particles
 	 */
-	private function initParticles()
+	private function initParticles():Void
 	{
 		var bitmapData:BitmapData;
+		var point:Vector3D;
 		
-		colorValues = new Array<Vector3D>();
-		colorPoints = new Array<Vector3D>();
-
-		// Add Away3D image
-		addImage(Cast.bitmapData("assets/away3d.png"), 0, 0, -100);
-
+		//create blue and white point vectors for the OpenFL image
+		bitmapData = Cast.bitmapData("assets/openfl.png");
+		
+		for (i in 0...bitmapData.width) {
+			for (j in 0...bitmapData.height) {
+				point = new Vector3D(PARTICLE_SIZE*(i - bitmapData.width / 2 - 100), PARTICLE_SIZE*( -j + bitmapData.height / 2));
+				if (((bitmapData.getPixel32(i, j) >> 24) & 0xff) == 0)
+					whitePoints.push(point);
+				else
+					bluePoints.push(point);
+			}
+		}
+		
 		//define where one logo stops and another starts
-		colorAway3DSeparation = colorPoints.length;
+		blueSeparation = bluePoints.length;
+		whiteSeparation = whitePoints.length;
 		
-		// Add OpenFL image
-		addImage(Cast.bitmapData("assets/openfl.png"), -95, 0, -31);
-
-		//define where one logo stops and another starts
-		colorOpenFLSeparation = colorPoints.length;
+		//create blue and white point vectors for the Haxe image
+		bitmapData = Cast.bitmapData("assets/haxe.png");
 		
-		// Add Flash Player image
-		addImage(Cast.bitmapData("assets/player.png"), -59, 0, 81);
-
-		//define where one logo stops and another starts
-		colorPlayerSeparation = colorPoints.length;
+		for (i in 0...bitmapData.width) {
+			for (j in 0...bitmapData.height) {
+				point = new Vector3D(PARTICLE_SIZE*(i - bitmapData.width / 2 + 100), PARTICLE_SIZE*( -j + bitmapData.height / 2));
+				if (((bitmapData.getPixel32(i, j) >> 24) & 0xff) == 0)
+					whitePoints.push(point);
+				else
+					bluePoints.push(point);
+			}
+		}
 		
-		// Add Cross Platform image
-		addImage(Cast.bitmapData("assets/crossplatform.png"), 59, 0, 81);
-
-		//define where one logo stops and another starts
-		colorPlatformsSeparation = colorPoints.length;
-		
-		// Add Haxe image
-		addImage(Cast.bitmapData("assets/haxe.png"), 95, 0, -31);
-		
-		var num:UInt = colorPoints.length;
+		var numBlue:Int = bluePoints.length;
+		var numWhite:Int = whitePoints.length;
 		
 		//setup the base geometry for one particle
 		var plane:PlaneGeometry = new PlaneGeometry(PARTICLE_SIZE, PARTICLE_SIZE,1,1,false);
 		
 		//combine them into a list
-		var colorGeometrySet:Vector<Geometry> = new Vector<Geometry>();
-		for (i in 0...num)
-			colorGeometrySet.push(plane);
+		var blueGeometrySet:Vector<Geometry> = new Vector<Geometry>();
+		for (i in 0...numBlue)
+			blueGeometrySet.push(plane);
+		
+		var whiteGeometrySet:Vector<Geometry> = new Vector<Geometry>();
+		for (i in 0...numWhite)
+			whiteGeometrySet.push(plane);
 		
 		//generate the particle geometries
-		colorGeometry = ParticleGeometryHelper.generateGeometry(colorGeometrySet);
+		blueGeometry = ParticleGeometryHelper.generateGeometry(blueGeometrySet);
+		whiteGeometry = ParticleGeometryHelper.generateGeometry(whiteGeometrySet);
+		
+		//define the blue particle animations and init function
+		blueAnimationSet = new ParticleAnimationSet(true);
+		blueAnimationSet.addAnimation(new ParticleBillboardNode());
+		blueAnimationSet.addAnimation(new ParticleBezierCurveNode(ParticlePropertiesMode.LOCAL_STATIC));
+		blueAnimationSet.addAnimation(new ParticlePositionNode(ParticlePropertiesMode.LOCAL_STATIC));
+		blueAnimationSet.initParticleFunc = initblueParticleFunc;
 		
 		//define the white particle animations and init function
-		colorAnimationSet = new ParticleAnimationSet();
-		colorAnimationSet.addAnimation(new ParticleBillboardNode());
-		colorAnimationSet.addAnimation(new ParticleBezierCurveNode(ParticlePropertiesMode.LOCAL_STATIC));
-		colorAnimationSet.addAnimation(new ParticlePositionNode(ParticlePropertiesMode.LOCAL_STATIC));
-		colorAnimationSet.addAnimation(new ParticleInitialColorNode(ParticlePropertiesMode.LOCAL_STATIC, true, false, new ColorTransform(0, 1, 0, 1)));
-		colorAnimationSet.initParticleFunc = initColorParticleFunc;
+		whiteAnimationSet = new ParticleAnimationSet();
+		whiteAnimationSet.addAnimation(new ParticleBillboardNode());
+		whiteAnimationSet.addAnimation(new ParticleBezierCurveNode(ParticlePropertiesMode.LOCAL_STATIC));
+		whiteAnimationSet.addAnimation(new ParticlePositionNode(ParticlePropertiesMode.LOCAL_STATIC));
+		whiteAnimationSet.initParticleFunc = initWhiteParticleFunc;
 	}
 	
-	/*
-	 * Add image particles to animation
-	 */
-	private function addImage(bitmapData:BitmapData, pX:Float, pY:Float, pZ:Float) {
-		var point:Vector3D;
-		var color:UInt;
-
-		// Create particle for each pixel position
-		for (i in 0...bitmapData.width) {
-			for (j in 0...bitmapData.height) {
-				point = new Vector3D(PARTICLE_SIZE*(i - bitmapData.width / 2 + pX), PARTICLE_SIZE*( -j + bitmapData.height / 2) + pY, PARTICLE_SIZE * pZ);
-				color = bitmapData.getPixel32(i, j);
-				if (((color >> 24) & 0xff) > 0xb0) {
-					colorValues.push(new Vector3D(((color & 0xff0000) >> 16)/255, ((color & 0xff00) >> 8)/255, (color & 0xff)/255));
-					colorPoints.push(point);
-				}
-			}
-		}
-	}
-
 	/**
 	 * Initialise the scene objects
 	 */
-	private function initObjects()
+	private function initObjects():Void
 	{
 		//initialise animators vectors
-		colorAnimators = ArrayUtils.Prefill( new Array<ParticleAnimator>(), NUM_ANIMATORS );
+		blueAnimators = new Vector<ParticleAnimator>(NUM_ANIMATORS, true);
+		whiteAnimators = new Vector<ParticleAnimator>(NUM_ANIMATORS, true);
 		
-		//create the particle mesh
-		colorParticleMesh = new Mesh(colorGeometry, colorMaterial);
+		//create the blue particle mesh
+		blueParticleMesh = new Mesh(blueGeometry, blueMaterial);
 		
-		var i:Int = 0;
+		//create the white particle mesh
+		whiteParticleMesh = new Mesh(whiteGeometry, whiteMaterial);
+		
 		for (i in 0...NUM_ANIMATORS) {
+			//clone the blue particle mesh
+			blueParticleMesh = cast blueParticleMesh.clone();
+			blueParticleMesh.rotationY = 45*(i-1);
+			scene.addChild(blueParticleMesh);
+			
 			//clone the white particle mesh
-			colorParticleMesh = cast(colorParticleMesh.clone(), Mesh);
-			colorParticleMesh.rotationY = 45*(i-1);
-			scene.addChild(colorParticleMesh);
+			whiteParticleMesh = cast whiteParticleMesh.clone();
+			whiteParticleMesh.rotationY = 45*(i-1);
+			scene.addChild(whiteParticleMesh);
+			
+			//create and start the blue particle animator
+			blueAnimators[i] = new ParticleAnimator(blueAnimationSet);
+			blueParticleMesh.animator = blueAnimators[i];
+			scene.addChild(blueParticleMesh);
 			
 			//create and start the white particle animator
-			colorAnimators[i] = new ParticleAnimator(colorAnimationSet);
-			colorParticleMesh.animator = colorAnimators[i];
-			scene.addChild(colorParticleMesh);
+			whiteAnimators[i] = new ParticleAnimator(whiteAnimationSet);
+			whiteParticleMesh.animator = whiteAnimators[i];
+			scene.addChild(whiteParticleMesh);
 		}
 	}
 	
 	/**
 	 * Initialise the listeners
 	 */
-	private function initListeners()
+	private function initListeners():Void
 	{
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -307,39 +325,49 @@ class Main extends Sprite
 	}
 	
 	/**
-	 * Initialiser function for particle properties
+	 * Initialiser function for blue particle properties
 	 */
-	private function initColorParticleFunc(properties:ParticleProperties)
+	private function initblueParticleFunc(properties:ParticleProperties):Void
 	{
 		properties.startTime = 0;
 		properties.duration = 1;
 		var degree1:Float = Math.random() * Math.PI * 2;
 		var degree2:Float = Math.random() * Math.PI * 2;
-		var r:Float = 250;
-		var s:Float = 0.25;
+		var r:Float = 500;
 		
-		if (properties.index < colorAway3DSeparation)
-			properties.nodes.set(ParticleBezierCurveNode.BEZIER_END_VECTOR3D, new Vector3D(0, 0, -300*PARTICLE_SIZE * s));
-		else if (properties.index < colorOpenFLSeparation)
-			properties.nodes.set(ParticleBezierCurveNode.BEZIER_END_VECTOR3D, new Vector3D(-285*PARTICLE_SIZE * s, 0, -93*PARTICLE_SIZE * s));
-		else if (properties.index < colorPlayerSeparation)
-			properties.nodes.set(ParticleBezierCurveNode.BEZIER_END_VECTOR3D, new Vector3D(-176*PARTICLE_SIZE * s, 0, 243*PARTICLE_SIZE * s));
-		else if (properties.index < colorPlatformsSeparation)
-			properties.nodes.set(ParticleBezierCurveNode.BEZIER_END_VECTOR3D, new Vector3D(176*PARTICLE_SIZE * s, 0, 243*PARTICLE_SIZE * s));
+		if (properties.index < blueSeparation)
+			properties.nodes[ParticleBezierCurveNode.BEZIER_END_VECTOR3D] = new Vector3D(200*PARTICLE_SIZE, 0, 0);
 		else
-			properties.nodes.set(ParticleBezierCurveNode.BEZIER_END_VECTOR3D, new Vector3D(285*PARTICLE_SIZE * s, 0, -93*PARTICLE_SIZE * s));
-
-		var rgb:Vector3D = colorValues[properties.index];
-		properties.nodes.set(ParticleInitialColorNode.COLOR_INITIAL_COLORTRANSFORM, new ColorTransform( rgb.x, rgb.y, rgb.z, 1));
-
-		properties.nodes.set(ParticleBezierCurveNode.BEZIER_CONTROL_VECTOR3D, new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2)));
-		properties.nodes.set(ParticlePositionNode.POSITION_VECTOR3D, colorPoints[properties.index]);
+			properties.nodes[ParticleBezierCurveNode.BEZIER_END_VECTOR3D] = new Vector3D(-200*PARTICLE_SIZE, 0, 0);
+		
+		properties.nodes[ParticleBezierCurveNode.BEZIER_CONTROL_VECTOR3D] = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), 2*r * Math.sin(degree2));
+		properties.nodes[ParticlePositionNode.POSITION_VECTOR3D] = bluePoints[properties.index];
+	}
+	
+	/**
+	 * Initialiser function for white particle properties
+	 */
+	private function initWhiteParticleFunc(properties:ParticleProperties):Void
+	{
+		properties.startTime = 0;
+		properties.duration = 1;
+		var degree1:Float = Math.random() * Math.PI * 2;
+		var degree2:Float = Math.random() * Math.PI * 2;
+		var r:Float = 500;
+		
+		if (properties.index < whiteSeparation)
+			properties.nodes[ParticleBezierCurveNode.BEZIER_END_VECTOR3D] = new Vector3D(200*PARTICLE_SIZE, 0, 0);
+		else
+			properties.nodes[ParticleBezierCurveNode.BEZIER_END_VECTOR3D] = new Vector3D(-200*PARTICLE_SIZE, 0, 0);
+		
+		properties.nodes[ParticleBezierCurveNode.BEZIER_CONTROL_VECTOR3D] = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
+		properties.nodes[ParticlePositionNode.POSITION_VECTOR3D] = whitePoints[properties.index];
 	}
 	
 	/**
 	 * Navigation and render loop
 	 */
-	private function onEnterFrame(event:Event)
+	private function onEnterFrame(event:Event):Void
 	{
 		//update the camera position
 		cameraController.panAngle += 0.2;
@@ -348,7 +376,8 @@ class Main extends Sprite
 		var time:Int;
 		for (i in 0...NUM_ANIMATORS) {
 			time = Std.int(1000*(Math.sin(Lib.getTimer()/5000 + Math.PI*i/4) + 1));
-			colorAnimators[i].update(time);
+			blueAnimators[i].update(time);
+			whiteAnimators[i].update(time);
 		}
 		
 		if (move) {
@@ -360,8 +389,8 @@ class Main extends Sprite
 		angle += Math.PI / 180;
 		greenLight.x = Math.sin(angle) * 600;
 		greenLight.z = Math.cos(angle) * 600;
-		blueLight.x = Math.sin(angle+Math.PI) * 600;
-		blueLight.z = Math.cos(angle+Math.PI) * 600;
+		orangeLight.x = Math.sin(angle+Math.PI) * 600;
+		orangeLight.z = Math.cos(angle+Math.PI) * 600;
 		
 		view.render();
 	}
@@ -369,7 +398,7 @@ class Main extends Sprite
 	/**
 	 * Mouse down listener for navigation
 	 */
-	private function onMouseDown(event:MouseEvent)
+	private function onMouseDown(event:MouseEvent):Void
 	{
 		lastPanAngle = cameraController.panAngle;
 		lastTiltAngle = cameraController.tiltAngle;
@@ -382,7 +411,7 @@ class Main extends Sprite
 	/**
 	 * Mouse up listener for navigation
 	 */
-	private function onMouseUp(event:MouseEvent)
+	private function onMouseUp(event:MouseEvent):Void
 	{
 		move = false;
 		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
@@ -391,7 +420,7 @@ class Main extends Sprite
 	/**
 	 * Mouse stage leave listener for navigation
 	 */
-	private function onStageMouseLeave(event:Event)
+	private function onStageMouseLeave(event:Event):Void
 	{
 		move = false;
 		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
@@ -400,7 +429,7 @@ class Main extends Sprite
 	/**
 	 * stage listener for resize events
 	 */
-	private function onResize(event:Event = null)
+	private function onResize(event:Event = null):Void
 	{
 		view.width = stage.stageWidth;
 		view.height = stage.stageHeight;

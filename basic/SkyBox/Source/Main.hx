@@ -49,7 +49,6 @@ import away3d.utils.*;
 import openfl.display.*;
 import openfl.events.*;
 import openfl.geom.Vector3D;
-
 import openfl.Lib;
 
 class Main extends Sprite
@@ -67,11 +66,9 @@ class Main extends Sprite
 	public function new ()
 	{
 		super();
-
+		
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
-
-		Lib.current.stage.color = 0x00;
 		
 		//setup the view
 		_view = new View3D();
@@ -91,7 +88,7 @@ class Main extends Sprite
 				Cast.bitmapData("assets/skybox/snow_negative_y.jpg"), 
 				Cast.bitmapData("assets/skybox/snow_positive_z.jpg"), 
 				Cast.bitmapData("assets/skybox/snow_negative_z.jpg"));
-
+		
 		//setup the environment map material
 		var material:ColorMaterial = new ColorMaterial(0xFFFFFF, 1);
 		material.specular = 0.5;
@@ -111,9 +108,6 @@ class Main extends Sprite
 		addEventListener(Event.ENTER_FRAME, _onEnterFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
-
-		// stats
-		this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**

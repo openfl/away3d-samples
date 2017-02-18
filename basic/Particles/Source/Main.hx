@@ -47,6 +47,7 @@ import away3d.animators.nodes.*;
 import away3d.containers.*;
 import away3d.controllers.*;
 import away3d.core.base.*;
+import away3d.debug.*;
 import away3d.entities.*;
 import away3d.materials.*;
 import away3d.primitives.*;
@@ -61,20 +62,20 @@ import openfl.Vector;
 class Main extends Sprite
 {		
 	//engine variables
-	var _view:View3D;
-	var _cameraController:HoverController;
-			
+	private var _view:View3D;
+	private var _cameraController:HoverController;
+	
 	//particle variables
-	var _particleAnimationSet:ParticleAnimationSet;
-	var _particleMesh:Mesh;
-	var _particleAnimator:ParticleAnimator;
+	private var _particleAnimationSet:ParticleAnimationSet;
+	private var _particleMesh:Mesh;
+	private var _particleAnimator:ParticleAnimator;
 	
 	//navigation variables
-	var _move:Bool = false;
-	var _lastPanAngle:Float;
-	var _lastTiltAngle:Float;
-	var _lastMouseX:Float;
-	var _lastMouseY:Float;
+	private var _move:Bool = false;
+	private var _lastPanAngle:Float;
+	private var _lastTiltAngle:Float;
+	private var _lastMouseX:Float;
+	private var _lastMouseY:Float;
 	
 	/**
 	 * Constructor
@@ -90,6 +91,8 @@ class Main extends Sprite
 		addChild(_view);
 		
 		_cameraController = new HoverController(_view.camera, null, 45, 20, 1000);
+		
+		addChild(new AwayStats(_view));
 		
 		//setup the particle geometry
 		var plane:Geometry = new PlaneGeometry(10, 10, 1, 1, false);
@@ -122,28 +125,25 @@ class Main extends Sprite
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
-
-		//stats
-		this.addChild(new away3d.debug.AwayFPS(_view, 10, 10, 0xffffff, 3));
 	}
 	
 	/**
 	 * Initialiser function for particle properties
 	 */
-	private function initParticleFunc(prop:ParticleProperties)
+	private function initParticleFunc(prop:ParticleProperties):Void
 	{
 		prop.startTime = Math.random()*5 - 5;
 		prop.duration = 5;
 		var degree1:Float = Math.random() * Math.PI ;
 		var degree2:Float = Math.random() * Math.PI * 2;
 		var r:Float = Math.random() * 50 + 400;
-		prop.nodes.set(ParticleVelocityNode.VELOCITY_VECTOR3D, new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2)));
+		prop.nodes[ParticleVelocityNode.VELOCITY_VECTOR3D] = new Vector3D(r * Math.sin(degree1) * Math.cos(degree2), r * Math.cos(degree1) * Math.cos(degree2), r * Math.sin(degree2));
 	}
 	
 	/**
 	 * Navigation and render loop
 	 */		
-	private function onEnterFrame(event:Event)
+	private function onEnterFrame(event:Event):Void
 	{
 		if (_move)
 		{
@@ -156,7 +156,7 @@ class Main extends Sprite
 	/**
 	 * Mouse down listener for navigation
 	 */		
-	private function onMouseDown(event:MouseEvent)
+	private function onMouseDown(event:MouseEvent):Void
 	{
 		_lastPanAngle = _cameraController.panAngle;
 		_lastTiltAngle = _cameraController.tiltAngle;
@@ -169,7 +169,7 @@ class Main extends Sprite
 	/**
 	 * Mouse up listener for navigation
 	 */		
-	private function onMouseUp(event:MouseEvent)
+	private function onMouseUp(event:MouseEvent):Void
 	{
 		_move = false;
 		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
@@ -178,7 +178,7 @@ class Main extends Sprite
 	/**
 	 * Mouse stage leave listener for navigation
 	 */
-	private function onStageMouseLeave(event:Event)
+	private function onStageMouseLeave(event:Event):Void
 	{
 		_move = false;
 		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
@@ -187,7 +187,7 @@ class Main extends Sprite
 	/**
 	 * stage listener for resize events
 	 */
-	private function onResize(event:Event = null)
+	private function onResize(event:Event = null):Void
 	{
 		_view.width = stage.stageWidth;
 		_view.height = stage.stageHeight;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Away3D Intermediate Monster Head Shading" package="away3d.samples.intermediatemonsterheadshading" version="1.0.0" />
+	<app main="Main" file="MonsterHeadShading" path="Export" />
+	
+	<window background="0x000000" orientation="landscape" />
+	<window width="1024" height="700" if="desktop" />
+	
+	<source path="Source" />
+	
+	<haxelib name="away3d" />
+	<haxelib name="openfl" />
+	
+	<assets path="Assets/monsterhead" rename="assets/monsterhead" embed="false" />
+	<assets path="Assets/diffuseGradient.jpg" rename="assets/diffuseGradient.jpg" />
+	
+	<icon path="Assets/away3d.svg" />
+	
+</project>
