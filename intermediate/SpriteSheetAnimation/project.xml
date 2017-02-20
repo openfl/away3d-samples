@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Away3D Intermediate Sprite Sheet Animation" package="away3d.samples.intermediatespritesheetanimation" version="1.0.0" />
+	<app main="Main" file="SpriteSheetAnimation" path="Export" />
+	
+	<window background="0x000000" orientation="landscape" />
+	<window width="1024" height="700" if="desktop" />
+	
+	<source path="Source" />
+	
+	<haxelib name="away3d" />
+	<haxelib name="actuate" />
+	
+	<assets path="Assets/spritesheets" rename="assets/spritesheets" exclude="*.swf" />
+	<assets path="Assets/tictac" rename="assets/tictac" embed="false" />
+	
+	<library path="Assets/spritesheets/digits.swf" id="digits" />
+	
+	<icon path="Assets/away3d.svg" />
+	
+</project>
