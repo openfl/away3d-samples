@@ -10,10 +10,7 @@
 	<source path="Source" />
 	
 	<haxelib name="away3d" />
-	<haxelib name="openfl" />
 	
-	<assets path="Assets" rename="assets" exclude="away3d.svg" />
-	
-	<icon path="Assets/away3d.svg" />
+	<assets path="Assets" rename="assets" />
 	
 </project>

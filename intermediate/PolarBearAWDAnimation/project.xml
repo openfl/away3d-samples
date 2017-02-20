@@ -10,12 +10,9 @@
 	<source path="Source" />
 	
 	<haxelib name="away3d" />
-	<haxelib name="openfl" />
 	
 	<assets path="Assets" rename="assets" exclude="away3d.svg|PolarBear.awd|snow.obj" />
 	<assets path="Assets/PolarBear.awd" rename="assets/PolarBear.awd" embed="false" />
 	<assets path="Assets/snow.obj" rename="assets/snow.obj" embed="false" />
-	
-	<icon path="Assets/away3d.svg" />
 	
 </project>

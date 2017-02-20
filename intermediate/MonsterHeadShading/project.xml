@@ -10,11 +10,8 @@
 	<source path="Source" />
 	
 	<haxelib name="away3d" />
-	<haxelib name="openfl" />
 	
 	<assets path="Assets/monsterhead" rename="assets/monsterhead" embed="false" />
 	<assets path="Assets/diffuseGradient.jpg" rename="assets/diffuseGradient.jpg" />
-	
-	<icon path="Assets/away3d.svg" />
 	
 </project>
