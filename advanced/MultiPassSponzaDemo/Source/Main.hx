@@ -355,7 +355,7 @@ class Main extends Sprite
     private function initText():Void
 	{
         _text = new TextField();
-        _text.defaultTextFormat = new TextFormat("Verdana", 11, 0xFFFFFF, null, null, null, null, null, "center");
+        _text.defaultTextFormat = new TextFormat("_sans", 11, 0xFFFFFF, null, null, null, null, null, "center");
 		_text.embedFonts = true;
 		_text.antiAliasType = AntiAliasType.ADVANCED;
 		_text.gridFitType = GridFitType.PIXEL;

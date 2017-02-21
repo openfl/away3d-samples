@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Away3D Advanced Shallow Water Demo" package="away3d.samples.advancedshallowwaterdemo" version="1.0.0" />
+	<app main="Main" file="ShallowWaterDemo" path="Export" />
+	
+	<window background="0x000000" orientation="landscape" />
+	<window width="1024" height="700" if="desktop" />
+	
+	<source path="Source" />
+	
+	<haxelib name="away3d" />
+	
+	<assets path="Assets/skybox" rename="assets/skybox" />
+	<library path="Assets/assets.swf" id="assets" preload="true" generate="true" />
+	
+</project>
