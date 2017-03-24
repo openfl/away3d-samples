@@ -117,15 +117,16 @@ class Main extends Sprite
 		if (browserType != "MOBILE") {
 			if (active == false || count > 600) {
 				activeDisplay.visible = true;
-				return;
 			}
 			else {
 				activeDisplay.visible = false;
+				count++;
 			}
-			count++;
 		}
 		
-		container.rotationY += 1;
+		if (active) {
+			container.rotationY += 1;
+		}
 		
 		_view.render();
 	}
