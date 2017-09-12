@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": [ "away3d", "3d", "engine", "openfl", "cross", "cpp", "flash", "game", "js", "web", "ios", "android" ],
 	"description": "Away3D samples",
-	"version": "5.0.1",
+	"version": "5.0.2",
 	"releasenote": "Ported additional samples",
 	"contributors": [ "Greg209", "singmajesty" ]
 }
