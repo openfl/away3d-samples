@@ -13,6 +13,7 @@ rob@infiniteturtles.co.uk
 http://www.infiniteturtles.co.uk
 
 The skybox is "Purple Nebula", created by David Bronke for the RFI MMORPG project.
+https://github.com/SkewedAspect/rfi-content/tree/master/source/skybox/textures
 
 This code is distributed under the MIT License
 
