@@ -139,7 +139,7 @@ class Main extends Sprite
 	private var terrainDepth:Float = 200000;
 	
 	private var currentTreeCount:Int;
-	private var polyCount:Int;
+	private var polyCount:Int = 0;
 	private var terrainPolyCount:Int;
 	private var treePolyCount:Int;
 	private var clonesCreated:Bool;
