@@ -56,7 +56,7 @@ class Main extends Sprite
 	private var pickingNormalTracer:SegmentSet;
 	private var sceneNormalTracer:SegmentSet;
 	private var previoiusCollidingObject:PickingCollisionVO;
-	private var raycastPicker:RaycastPicker;
+	private var raycastPicker:RaycastPicker = new RaycastPicker(false);
 	private var head:Mesh;
 	private var cubeGeometry:CubeGeometry;
 	private var sphereGeometry:SphereGeometry;

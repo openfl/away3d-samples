@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="Away3D Basic View" package="away3d.samples.basicview" version="1.0.0" />
-	<app main="Main" file="View" path="Export" />
+	<meta title="Away3D Intermediate ParticleTrails" package="away3d.samples.particletrails" version="1.0.0" />
+	<app main="Main" file="ParticleTrails" path="Export" />
 	
 	<window background="0x000000" orientation="landscape" />
 	<window width="1024" height="700" if="desktop" />

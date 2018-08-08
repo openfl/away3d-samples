@@ -1,16 +1,17 @@
 /*
 
-Basic View example in Away3d
+Particle trails in Away3D
 
 Demonstrates:
 
-How to create a 3D environment for your objects
-How to add a new textured object to your world
-How to rotate an object in your world
+How to create a complex static parrticle behaviour
+How to reuse a particle animation set and particle geometry in multiple animators and meshes
+How to create a particle trail
 
-Code by Rob Bateman
+Code by Rob Bateman & Liao Cheng
 rob@infiniteturtles.co.uk
 http://www.infiniteturtles.co.uk
+liaocheng210@126.com
 
 This code is distributed under the MIT License
 
@@ -38,69 +39,263 @@ THE SOFTWARE.
 
 package;
 
+import openfl.display.*;
+import openfl.events.*;
+import openfl.geom.*;
+import openfl.Vector;
+
+import away3d.animators.*;
+import away3d.animators.data.*;
+import away3d.animators.nodes.*;
+import away3d.cameras.*;
 import away3d.containers.*;
+import away3d.controllers.*;
+import away3d.core.base.*;
+import away3d.debug.*;
 import away3d.entities.*;
 import away3d.materials.*;
 import away3d.primitives.*;
+import away3d.tools.helpers.*;
+import away3d.tools.helpers.data.*;
 import away3d.utils.*;
 
-import openfl.display.*;
-import openfl.events.*;
-import openfl.geom.Vector3D;
-
 class Main extends Sprite
-{	
+{
 	//engine variables
-	private var _view:View3D;
+	private var scene:Scene3D;
+	private var camera:Camera3D;
+	private var view:View3D;
+	private var cameraController:HoverController;
+	
+	//material objects
+	private var particleMaterial:TextureMaterial;
+	
+	//particle objects
+	private var particleAnimationSet:ParticleAnimationSet;
+	private var particleFollowNode:ParticleFollowNode;
+	private var particleGeometry:ParticleGeometry;
 	
 	//scene objects
-	private var _plane:Mesh;
+	private var followTarget1:Object3D;
+	private var followTarget2:Object3D;
+	private var particleMesh1:Mesh;
+	private var particleMesh2:Mesh;
+	private var animator1:ParticleAnimator;
+	private var animator2:ParticleAnimator;
+	
+	//navigation variables
+	private var angle:Float = 0;
+	private var move:Bool = false;
+	private var lastPanAngle:Float;
+	private var lastTiltAngle:Float;
+	private var lastMouseX:Float;
+	private var lastMouseY:Float;
 	
 	/**
-	 * Constructor
-	 */
-	public function new ()
+		* Constructor
+		*/
+	public function new()
 	{
 		super();
-		
+		init();
+	}
+	
+	/**
+		* Global initialise function
+		*/
+	private function init():Void
+	{
+		initEngine();
+		initMaterials();
+		initParticles();
+		initObjects();
+		initListeners();
+	}
+	
+	/**
+		* Initialise the engine
+		*/
+	private function initEngine():Void
+	{
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		
-		//setup the view
-		_view = new View3D();
-		addChild(_view);
+		scene = new Scene3D();
 		
-		//setup the camera
-		_view.camera.z = -600;
-		_view.camera.y = 500;
-		_view.camera.lookAt(new Vector3D());
+		camera = new Camera3D();
 		
-		//setup the scene
-		_plane = new Mesh(new PlaneGeometry(700, 700), new TextureMaterial(Cast.bitmapTexture("assets/floor_diffuse.jpg")));
-		_view.scene.addChild(_plane);
+		view = new View3D();
+		view.antiAlias = 4;
+		view.scene = scene;
+		view.camera = camera;
 		
-		//setup the render loop
-		addEventListener(Event.ENTER_FRAME, _onEnterFrame);
+		//setup controller to be used on the camera
+		cameraController = new HoverController(camera, null, 45, 20, 1000, 5);
+		
+		addChild(view);
+		
+		addChild(new AwayStats(view));
+	}
+	
+	/**
+		* Initialise the materials
+		*/
+	private function initMaterials():Void
+	{
+		//setup particle material
+		particleMaterial = new TextureMaterial(Cast.bitmapTexture("assets/cards_suit.png"));
+		particleMaterial.blendMode = BlendMode.ADD;
+	}
+	
+	/**
+		* Initialise the particles
+		*/
+	private function initParticles():Void
+	{
+		//setup the base geometry for one particle
+		var plane:Geometry = new PlaneGeometry(30, 30, 1, 1, false);
+		
+		//create the particle geometry
+		var geometrySet:Vector<Geometry> = new Vector<Geometry>();
+		var setTransforms:Vector<ParticleGeometryTransform> = new Vector<ParticleGeometryTransform>();
+		var particleTransform:ParticleGeometryTransform;
+		var uvTransform:Matrix;
+		for (i in 0...1000)
+		{
+			geometrySet.push(plane);
+			particleTransform = new ParticleGeometryTransform();
+			uvTransform = new Matrix();
+			uvTransform.scale(0.5, 0.5);
+			uvTransform.translate(Std.int(Math.random() * 2) / 2, Std.int(Math.random() * 2) / 2);
+			particleTransform.UVTransform = uvTransform;
+			setTransforms.push(particleTransform);
+		}
+		
+		particleGeometry = ParticleGeometryHelper.generateGeometry(geometrySet, setTransforms);
+		
+		
+		//create the particle animation set
+		particleAnimationSet = new ParticleAnimationSet(true, true, true);
+		
+		//define the particle animations and init function
+		particleAnimationSet.addAnimation(new ParticleBillboardNode());
+		particleAnimationSet.addAnimation(new ParticleVelocityNode(ParticlePropertiesMode.LOCAL_STATIC));
+		particleAnimationSet.addAnimation(new ParticleColorNode(ParticlePropertiesMode.GLOBAL, true, false, false, false, new ColorTransform(), new ColorTransform(1, 1, 1, 0)));
+		particleAnimationSet.addAnimation(particleFollowNode = new ParticleFollowNode(true, false));
+		particleAnimationSet.initParticleFunc = initParticleProperties;
+	}
+	
+	/**
+		* Initialise the scene objects
+		*/
+	private function initObjects():Void
+	{
+		//create wireframe axes
+		scene.addChild(new WireframeAxesGrid(10,1500));
+		
+		//create follow targets
+		followTarget1 = new Object3D();
+		followTarget2 = new Object3D();
+		
+		//create the particle meshes
+		particleMesh1 = new Mesh(particleGeometry, particleMaterial);
+		particleMesh1.y = 300;
+		scene.addChild(particleMesh1);
+		
+		particleMesh2 = cast (particleMesh1.clone(), Mesh);
+		particleMesh2.y = 300;
+		scene.addChild(particleMesh2);
+		
+		//create and start the particle animators
+		animator1 = new ParticleAnimator(particleAnimationSet);
+		particleMesh1.animator = animator1;
+		animator1.start();
+		particleFollowNode.getAnimationState(animator1).followTarget = followTarget1;
+		
+		animator2 = new ParticleAnimator(particleAnimationSet);
+		particleMesh2.animator = animator2;
+		animator2.start();
+		particleFollowNode.getAnimationState(animator2).followTarget = followTarget2;
+	}
+	
+	/**
+		* Initialise the listeners
+		*/
+	private function initListeners():Void
+	{
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		stage.addEventListener(Event.RESIZE, onResize);
 		onResize();
 	}
 	
+	
 	/**
-	 * render loop
-	 */
-	private function _onEnterFrame(e:Event):Void
+		* Initialiser function for particle properties
+		*/
+	private function initParticleProperties(properties:ParticleProperties):Void
 	{
-		_plane.rotationY += 1;
-		
-		_view.render();
+		properties.startTime = Math.random()*4.1;
+		properties.duration = 4;
+		properties.nodes.set (ParticleVelocityNode.VELOCITY_VECTOR3D, new Vector3D(Math.random() * 100 - 50, Math.random() * 100 - 200, Math.random() * 100 - 50));
 	}
 	
 	/**
-	 * stage listener for resize events
-	 */
+		* Navigation and render loop
+		*/
+	private function onEnterFrame(event:Event):Void
+	{
+		if (move) {
+			cameraController.panAngle = 0.3*(stage.mouseX - lastMouseX) + lastPanAngle;
+			cameraController.tiltAngle = 0.3*(stage.mouseY - lastMouseY) + lastTiltAngle;
+		}
+		
+		angle += 0.04;
+		followTarget1.x = Math.cos(angle) * 500;
+		followTarget1.z = Math.sin(angle) * 500;
+		followTarget2.x = Math.sin(angle) * 500;
+		
+		view.render();
+	}
+	
+	/**
+		* Mouse down listener for navigation
+		*/
+	private function onMouseDown(event:MouseEvent):Void
+	{
+		lastPanAngle = cameraController.panAngle;
+		lastTiltAngle = cameraController.tiltAngle;
+		lastMouseX = stage.mouseX;
+		lastMouseY = stage.mouseY;
+		move = true;
+		stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+	}
+	
+	/**
+		* Mouse up listener for navigation
+		*/
+	private function onMouseUp(event:MouseEvent):Void
+	{
+		move = false;
+		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+	}
+	
+	/**
+		* Mouse stage leave listener for navigation
+		*/
+	private function onStageMouseLeave(event:Event):Void
+	{
+		move = false;
+		stage.removeEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
+	}
+	
+	/**
+		* stage listener for resize events
+		*/
 	private function onResize(event:Event = null):Void
 	{
-		_view.width = stage.stageWidth;
-		_view.height = stage.stageHeight;
+		view.width = stage.stageWidth;
+		view.height = stage.stageHeight;
 	}
 }
