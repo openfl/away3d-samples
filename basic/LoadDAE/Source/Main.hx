@@ -4,7 +4,7 @@
 
  Demonstrates:
 
- How to use the Loader3D object to load an embedded internal DAE model.
+ How to use the Asset3DLibrary class to load an embedded internal DAE model.
 
  Code by Greg Caldwell
  greg.caldwell@geepersinteractive.co.uk
