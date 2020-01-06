@@ -4,7 +4,7 @@ Light probe usage in Away3D 4.0
 
 Demonstrates:
 
-How to use the Loader3D object to load an embedded internal obj model.
+How to use the Asset3DLibrary class to load an embedded internal obj model.
 How to use LightProbe objects in combination with StaticLightPicker to simulate indirect lighting
 How to use shadow mapping with point lights
 
