@@ -4,7 +4,7 @@
 
  Demonstrates:
 
- How to use the Loader3D object to load an embedded internal 3ds model.
+ How to use the Asset3DLibrary class to load an embedded internal 3ds model.
  How to map an external asset reference inside a file to an internal embedded asset.
  How to extract material data and use it to set custom material properties on a model.
 
