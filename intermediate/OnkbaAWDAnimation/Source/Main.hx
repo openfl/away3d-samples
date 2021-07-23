@@ -519,7 +519,7 @@ class Main extends Sprite
 			
         } else if (event.asset.assetType == Asset3DType.MESH) {
             
-            var mesh:Mesh = Std.is(event.asset, Mesh) ? cast event.asset : null;
+            var mesh:Mesh = #if (haxe_ver >= 4.2) Std.isOfType #else Std.is #end(event.asset, Mesh) ? cast event.asset : null;
             
             if (mesh != null) {
                 if (mesh.name == "Onkba") {
