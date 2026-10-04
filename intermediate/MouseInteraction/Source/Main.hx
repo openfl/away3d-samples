@@ -212,14 +212,14 @@ class Main extends Sprite
 		// To trace picking normals.
 		pickingNormalTracer = new SegmentSet();
 		pickingNormalTracer.mouseEnabled = pickingNormalTracer.mouseChildren = false;
-		var lineSegment1:LineSegment = new LineSegment( new Vector3D(), new Vector3D(), 0xFFFFFF, 0xFFFFFF, 3 );
+		var lineSegment1:LineSegment = new LineSegment( new Vector3D(), new Vector3D(), 0xFFFFFF, 0xFFFFFF, 6 );
 		pickingNormalTracer.addSegment( lineSegment1 );
 		pickingNormalTracer.visible = false;
 		view.scene.addChild( pickingNormalTracer );
 		
 		sceneNormalTracer = new SegmentSet();
 		sceneNormalTracer.mouseEnabled = sceneNormalTracer.mouseChildren = false;
-		var lineSegment2:LineSegment = new LineSegment( new Vector3D(), new Vector3D(), 0xFFFFFF, 0xFFFFFF, 3 );
+		var lineSegment2:LineSegment = new LineSegment( new Vector3D(), new Vector3D(), 0xFFFFFF, 0xFFFFFF, 6 );
 		sceneNormalTracer.addSegment( lineSegment2 );
 		sceneNormalTracer.visible = false;
 		view.scene.addChild( sceneNormalTracer );
