@@ -56,6 +56,8 @@ import away3d.core.base.Geometry;
 import away3d.entities.Mesh;
 import away3d.entities.SegmentSet;
 import away3d.filters.MotionBlurFilter3D;
+import away3d.materials.ColorMaterial;
+import away3d.materials.methods.FogMethod;
 import away3d.materials.TextureMaterial;
 import away3d.primitives.LineSegment;
 import away3d.primitives.PlaneGeometry;
@@ -153,7 +155,9 @@ class Main extends Sprite {
 		_view.scene.addChild(_gridContainer);
 
 		// Create the vector of segment sets.
-		_grid = new SegmentSet();
+		var gridColor:ColorMaterial = new ColorMaterial(0x00A000);
+		_grid = new SegmentSet(gridColor, false);
+		gridColor.addMethod(new FogMethod(0, _hgt, 0x000000));
 		_gridContainer.addChild(_grid);
 
 		// Setup some vars for reuse
@@ -168,27 +172,26 @@ class Main extends Sprite {
 			var last:Vector3D = new Vector3D(-wBy2, 0, -hBy2 + (gY * hGap) );
 			var next:Vector3D = new Vector3D();
 
-			var col:UInt = Std.int(0xA0 - (gY/_stepsY * 0xA0)) << 8;
 			for (gX in 0..._stepsX) {
 				next = new Vector3D(-wBy2 + (gX * wGap), 0, -hBy2 + (gY * hGap) );
-				_grid.addSegment(new LineSegment(last, next, col, col, 0.75));
+				_grid.addSegment(new LineSegment(last, next, 1.5));
 				ctr++;
 				last = next;
 			}
 		}
 		
 		//Add rolling spheres
-		_sphere1 = new WireframeSphere(200, 16, 12, 0xffffff, 0.5);
+		_sphere1 = new WireframeSphere(200, 16, 12, 0xffffff, 1);
 		_sphere1.x = -wBy2 * 0.4; // Off to the left a bit
 		_sphere1.z = -hBy2 * 0.5;
 		_gridContainer.addChild(_sphere1);
 
-		_sphere2 = new WireframeSphere(200, 16, 12, 0xff0000, 0.5);
+		_sphere2 = new WireframeSphere(200, 16, 12, 0xff0000, 1);
 		_sphere2.x = wBy2 * 0.4; // Off to the right a bit
 		_sphere2.z = -hBy2 * 0.5;
 		_gridContainer.addChild(_sphere2);
 
-		_sphere3 = new WireframeSphere(100, 16, 12, 0x0000ff, 0.5);
+		_sphere3 = new WireframeSphere(100, 16, 12, 0x0000ff, 1);
 		_sphere3.z = -hBy2 * 0.5; // Off to the left a bit
 		_gridContainer.addChild(_sphere3);
 
